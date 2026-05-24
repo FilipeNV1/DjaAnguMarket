@@ -1,23 +1,20 @@
-"""
-URL configuration for DjanGoMarket project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from app import views
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from app import views, api_views
+
+router = DefaultRouter()
+router.register(r'supermarkets', api_views.SupermarketViewSet, basename='api-supermarket')
+router.register(r'sections', api_views.SectionViewSet, basename='api-section')
+router.register(r'employees', api_views.EmployeeViewSet, basename='api-employee')
+router.register(r'products', api_views.ProductViewSet, basename='api-product')
+router.register(r'warehouses', api_views.WarehouseViewSet, basename='api-warehouse')
+router.register(r'distributors', api_views.DistributorViewSet, basename='api-distributor')
+router.register(r'clients', api_views.ClientViewSet, basename='api-client')
+router.register(r'purchases', api_views.PurchaseViewSet, basename='api-purchase')
+router.register(r'orders', api_views.OrderViewSet, basename='api-order')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -73,4 +70,10 @@ urlpatterns = [
     path('clients/<int:pk>/delete/', views.client_delete, name='client_delete'),
     path('purchases/<int:pk>/delete/', views.purchase_delete, name='purchase_delete'),
     path('orders/<int:pk>/delete/', views.order_delete, name='order_delete'),
+
+    # REST API
+    path('api/', include(router.urls)),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/me/', api_views.MeView.as_view(), name='api_me'),
 ]
