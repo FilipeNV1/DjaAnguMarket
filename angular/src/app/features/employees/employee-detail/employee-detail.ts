@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { DecimalPipe } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { Employee } from '../../../core/models';
 
 @Component({
   selector: 'app-employee-detail',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, DecimalPipe],
   templateUrl: './employee-detail.html',
 })
 export class EmployeeDetailComponent implements OnInit {

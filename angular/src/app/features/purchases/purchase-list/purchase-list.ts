@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { DecimalPipe } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Purchase, Me } from '../../../core/models';
@@ -8,7 +9,7 @@ import { Purchase, Me } from '../../../core/models';
 @Component({
   selector: 'app-purchase-list',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, DecimalPipe],
   templateUrl: './purchase-list.html',
 })
 export class PurchaseListComponent implements OnInit {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { DecimalPipe } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Product, Me } from '../../../core/models';
@@ -8,7 +9,7 @@ import { Product, Me } from '../../../core/models';
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, DecimalPipe],
   templateUrl: './product-list.html',
 })
 export class ProductListComponent implements OnInit {

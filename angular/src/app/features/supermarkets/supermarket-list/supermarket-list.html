@@ -19,7 +19,7 @@
           <td><a [routerLink]="['/supermarkets', s.id]">{{ s.location }}</a></td>
           <td>{{ s.opening_time }}</td>
           <td>{{ s.close_time }}</td>
-          <td>{{ s.sections?.length ?? 0 }}</td>
+          <td>{{ s.sections.length }}</td>
           <td>
             @if (canWrite) {
               <a [routerLink]="['/supermarkets', s.id, 'edit']" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
