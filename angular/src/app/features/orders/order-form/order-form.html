@@ -1,0 +1,46 @@
+<div class="container mt-4" style="max-width:640px">
+  <a routerLink="/orders" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
+  <div class="card">
+    <div class="card-header"><h5 class="mb-0">{{ isEditing ? 'Edit' : 'New' }} Order</h5></div>
+    <div class="card-body">
+      @if (error) { <div class="alert alert-danger">{{ error }}</div> }
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <label class="form-label">Date *</label>
+            <input class="form-control" type="date" formControlName="ord_date" />
+          </div>
+          <div class="col-6">
+            <label class="form-label">Distributor *</label>
+            <select class="form-select" formControlName="distributor">
+              <option value="" disabled>-- select --</option>
+              @for (d of distributors; track d.email) { <option [value]="d.email">{{ d.name }}</option> }
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Supermarket *</label>
+            <select class="form-select" formControlName="supermarket">
+              <option [value]="null" disabled>-- select --</option>
+              @for (s of supermarkets; track s.id) { <option [value]="s.id">{{ s.location }}</option> }
+            </select>
+          </div>
+        </div>
+
+        <h6>Items</h6>
+        @for (row of itemRows; track $index) {
+          <div class="d-flex gap-2 mb-2 align-items-center">
+            <select class="form-select form-select-sm" [(ngModel)]="row.product" [ngModelOptions]="{standalone:true}"
+              (change)="onProductChange($index, row.product)">
+              @for (p of products; track p.prodid) { <option [value]="p.prodid">{{ p.name }}</option> }
+            </select>
+            <input class="form-control form-control-sm" type="number" min="1" [(ngModel)]="row.quantity" [ngModelOptions]="{standalone:true}" style="width:80px" />
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeItem($index)">✕</button>
+          </div>
+        }
+        <button type="button" class="btn btn-sm btn-outline-secondary mb-3" (click)="addItem()">+ Add Product</button>
+
+        <button class="btn btn-dark w-100" type="submit">{{ isEditing ? 'Save' : 'Create' }}</button>
+      </form>
+    </div>
+  </div>
+</div>
