@@ -1,0 +1,16 @@
+<div class="container mt-4" style="max-width:500px">
+  <a routerLink="/products" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
+  @if (item) {
+    <div class="card">
+      <div class="card-header"><h5 class="mb-0">{{ item.name }}</h5></div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-5">Brand</dt><dd class="col-7">{{ item.brand }}</dd>
+          <dt class="col-5">Price</dt><dd class="col-7">{{ item.price | number:'1.2-2' }} €</dd>
+          <dt class="col-5">Section</dt><dd class="col-7">{{ item.section ?? item.section_name }}</dd>
+          <dt class="col-5">Requires Cold</dt><dd class="col-7">{{ item.req_cold ? 'Yes' : 'No' }}</dd>
+        </dl>
+      </div>
+    </div>
+  }
+</div>
