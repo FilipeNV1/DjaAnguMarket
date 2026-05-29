@@ -1,0 +1,29 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Warehouses</h2>
+    @if (canWrite) { <a routerLink="/warehouses/new" class="btn btn-dark">+ Add</a> }
+  </div>
+  <input class="form-control mb-3" placeholder="Search..." [(ngModel)]="search" (input)="applyFilter()" />
+  <table class="table table-bordered table-hover">
+    <thead class="table-dark">
+      <tr><th>#</th><th>Supermarket</th><th>Area (m²)</th><th>Products</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      @for (w of filtered; track w.wnumber) {
+        <tr>
+          <td>{{ w.wnumber }}</td>
+          <td><a [routerLink]="['/warehouses', w.wnumber]">{{ w.supermarket_location ?? w.supermarket }}</a></td>
+          <td>{{ w.area }}</td>
+          <td>{{ w.stock?.length ?? 0 }}</td>
+          <td>
+            @if (canWrite) {
+              <a [routerLink]="['/warehouses', w.wnumber, 'edit']" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+              <button class="btn btn-sm btn-outline-danger" (click)="delete(w.wnumber)">Delete</button>
+            }
+          </td>
+        </tr>
+      }
+      @empty { <tr><td colspan="5" class="text-center text-muted">No warehouses found.</td></tr> }
+    </tbody>
+  </table>
+</div>

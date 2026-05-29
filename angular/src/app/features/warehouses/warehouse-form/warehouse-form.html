@@ -1,0 +1,36 @@
+<div class="container mt-4" style="max-width:600px">
+  <a routerLink="/warehouses" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
+  <div class="card">
+    <div class="card-header"><h5 class="mb-0">{{ isEditing ? 'Edit' : 'New' }} Warehouse</h5></div>
+    <div class="card-body">
+      @if (error) { <div class="alert alert-danger">{{ error }}</div> }
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="mb-3">
+          <label class="form-label">Area (m²) *</label>
+          <input class="form-control" type="number" formControlName="area" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Supermarket *</label>
+          <select class="form-select" formControlName="supermarket">
+            <option [value]="null" disabled>-- select --</option>
+            @for (s of supermarkets; track s.id) { <option [value]="s.id">{{ s.location }}</option> }
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Products</label>
+          <div class="d-flex flex-wrap gap-2">
+            @for (p of products; track p.prodid) {
+              <button type="button" class="btn btn-sm"
+                [class.btn-dark]="isSelected(p.prodid)"
+                [class.btn-outline-secondary]="!isSelected(p.prodid)"
+                (click)="toggleProduct(p.prodid)">
+                {{ p.name }}
+              </button>
+            }
+          </div>
+        </div>
+        <button class="btn btn-dark w-100" type="submit">{{ isEditing ? 'Save' : 'Create' }}</button>
+      </form>
+    </div>
+  </div>
+</div>
