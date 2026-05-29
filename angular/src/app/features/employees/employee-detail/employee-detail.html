@@ -1,0 +1,21 @@
+<div class="container mt-4" style="max-width:600px">
+  <a routerLink="/employees" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
+  @if (item) {
+    <div class="card">
+      <div class="card-header"><h5 class="mb-0">Employee #{{ item.enumber }} — {{ item.name }}</h5></div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-5">Role</dt><dd class="col-7">{{ item.role }}</dd>
+          <dt class="col-5">Group</dt><dd class="col-7"><span class="badge bg-secondary">{{ item.group }}</span></dd>
+          <dt class="col-5">Salary</dt><dd class="col-7">{{ item.salary | number:'1.2-2' }} €</dd>
+          <dt class="col-5">Age</dt><dd class="col-7">{{ item.age }}</dd>
+          <dt class="col-5">Contact</dt><dd class="col-7">{{ item.contact }}</dd>
+          <dt class="col-5">Sex</dt><dd class="col-7">{{ item.sex }}</dd>
+          <dt class="col-5">Supermarket</dt><dd class="col-7">{{ item.supermarket_location ?? item.supermarket }}</dd>
+          <dt class="col-5">Supervisor</dt><dd class="col-7">{{ item.supervisor ?? '—' }}</dd>
+          <dt class="col-5">Active</dt><dd class="col-7">{{ item.is_active ? 'Yes' : 'No' }}</dd>
+        </dl>
+      </div>
+    </div>
+  }
+</div>
