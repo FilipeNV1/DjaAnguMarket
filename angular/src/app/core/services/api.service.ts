@@ -1,3 +1,4 @@
+import { environment } from '../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -6,7 +7,7 @@ import {
   Distributor, Client, Purchase, Order,
 } from '../models';
 
-const BASE = 'http://localhost:8000/api';
+const BASE = environment.apiUrl;
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -21,10 +22,10 @@ export class ApiService {
 
   // Sections
   getSections(): Observable<Section[]> { return this.http.get<Section[]>(`${BASE}/sections/`); }
-  getSection(sname: string): Observable<Section> { return this.http.get<Section>(`${BASE}/sections/${sname}/`); }
+  getSection(sname: string): Observable<Section> { return this.http.get<Section>(`${BASE}/sections/${encodeURIComponent(sname)}/`); }
   createSection(data: any): Observable<Section> { return this.http.post<Section>(`${BASE}/sections/`, data); }
-  updateSection(sname: string, data: any): Observable<Section> { return this.http.put<Section>(`${BASE}/sections/${sname}/`, data); }
-  deleteSection(sname: string): Observable<void> { return this.http.delete<void>(`${BASE}/sections/${sname}/`); }
+  updateSection(sname: string, data: any): Observable<Section> { return this.http.put<Section>(`${BASE}/sections/${encodeURIComponent(sname)}/`, data); }
+  deleteSection(sname: string): Observable<void> { return this.http.delete<void>(`${BASE}/sections/${encodeURIComponent(sname)}/`); }
 
   // Employees
   getEmployees(): Observable<Employee[]> { return this.http.get<Employee[]>(`${BASE}/employees/`); }

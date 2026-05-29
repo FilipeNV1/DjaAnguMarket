@@ -7,7 +7,10 @@
         <dl class="row mb-0">
           <dt class="col-5">Brand</dt><dd class="col-7">{{ item.brand }}</dd>
           <dt class="col-5">Price</dt><dd class="col-7">{{ item.price | number:'1.2-2' }} €</dd>
-          <dt class="col-5">Section</dt><dd class="col-7">{{ item.section ?? item.section_name }}</dd>
+          <dt class="col-5">Section</dt>
+          <dd class="col-7">
+            <a [routerLink]="['/sections', sectionName]">{{ item.section ?? item.section_name }}</a>
+          </dd>
           <dt class="col-5">Requires Cold</dt><dd class="col-7">{{ item.req_cold ? 'Yes' : 'No' }}</dd>
         </dl>
       </div>

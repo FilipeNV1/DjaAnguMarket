@@ -11,7 +11,7 @@
           <dt class="col-4">Sections</dt>
           <dd class="col-8">
             @for (s of item.sections; track s.sname) {
-              <span class="badge bg-secondary me-1">{{ s.sname }}</span>
+              <a [routerLink]="['/sections', s.sname]" class="badge bg-secondary me-1 text-decoration-none">{{ s.sname }}</a>
             }
           </dd>
         </dl>

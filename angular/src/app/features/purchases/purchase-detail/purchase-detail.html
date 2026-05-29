@@ -6,7 +6,14 @@
       <div class="card-body">
         <dl class="row">
           <dt class="col-4">Date</dt><dd class="col-8">{{ item.date }}</dd>
-          <dt class="col-4">Client</dt><dd class="col-8">{{ item.client_name ?? '—' }}</dd>
+          <dt class="col-4">Client</dt>
+          <dd class="col-8">
+            @if (item.client) {
+              <a [routerLink]="['/clients', item.client]">{{ item.client_name }}</a>
+            } @else {
+              —
+            }
+          </dd>
           <dt class="col-4">Total</dt><dd class="col-8">{{ item.calculated_total | number:'1.2-2' }} €</dd>
         </dl>
         <h6>Items</h6>
@@ -15,7 +22,7 @@
           <tbody>
             @for (it of item.items; track it.product) {
               <tr>
-                <td>{{ it.product_name }}</td>
+                <td><a [routerLink]="['/products', it.product]">{{ it.product_name }}</a></td>
                 <td>{{ it.quantity }}</td>
                 <td>{{ it.price_at_purchase | number:'1.2-2' }} €</td>
                 <td>{{ it.quantity * it.price_at_purchase | number:'1.2-2' }} €</td>

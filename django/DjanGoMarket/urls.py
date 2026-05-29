@@ -2,8 +2,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 from app import views, api_views
+from app.jwt_views import EmployeeTokenObtainPairView
 
 router = DefaultRouter()
 router.register(r'supermarkets', api_views.SupermarketViewSet, basename='api-supermarket')
@@ -72,8 +73,9 @@ urlpatterns = [
     path('orders/<int:pk>/delete/', views.order_delete, name='order_delete'),
 
     # REST API
+    path('api/health/', api_views.HealthView.as_view(), name='api_health'),
     path('api/', include(router.urls)),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain'),
+    path('api/token/', EmployeeTokenObtainPairView.as_view(), name='token_obtain'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/me/', api_views.MeView.as_view(), name='api_me'),
 ]

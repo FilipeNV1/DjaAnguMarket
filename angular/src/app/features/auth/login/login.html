@@ -1,9 +1,10 @@
 <div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
-  <div class="card shadow" style="width:380px">
+  <div class="card shadow login-card" style="width:380px">
     <div class="card-body p-4">
-      <h3 class="card-title text-center mb-4">DjanGoMarket</h3>
+      <h3 class="card-title text-center mb-1 fw-bold">DjanGoMarket</h3>
+      <p class="text-center text-muted small mb-4">TP2 — Angular + DRF</p>
       @if (error) {
-        <div class="alert alert-danger">{{ error }}</div>
+        <div class="alert alert-danger py-2">{{ error }}</div>
       }
       <form [formGroup]="form" (ngSubmit)="submit()">
         <div class="mb-3">
@@ -14,8 +15,9 @@
           <label class="form-label">Password</label>
           <input class="form-control" type="password" formControlName="password" />
         </div>
-        <button class="btn btn-dark w-100" type="submit">Login</button>
+        <button class="btn btn-brand w-100" type="submit">Login</button>
       </form>
+      <p class="text-muted small mt-3 mb-0 text-center">Demo: 1000 / password123</p>
     </div>
   </div>
 </div>

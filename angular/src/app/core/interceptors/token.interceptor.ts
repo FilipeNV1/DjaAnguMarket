@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { catchError, switchMap, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
@@ -21,7 +22,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
         const refresh = auth.getRefreshToken();
         if (refresh) {
           return http
-            .post<{ access: string }>('http://localhost:8000/api/token/refresh/', { refresh })
+            .post<{ access: string }>(`${environment.apiUrl}/token/refresh/`, { refresh })
             .pipe(
               switchMap(tokens => {
                 auth.setAccessToken(tokens.access);

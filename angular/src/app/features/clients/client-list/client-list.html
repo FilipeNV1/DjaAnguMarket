@@ -3,6 +3,10 @@
     <h2>Clients</h2>
     @if (canWrite) { <a routerLink="/clients/new" class="btn btn-dark">+ Add</a> }
   </div>
+  @if (loading) { <p class="text-muted">Loading clients...</p> }
+  @if (error) {
+    <div class="alert alert-warning">{{ error }} <button type="button" class="btn btn-sm btn-outline-dark ms-2" (click)="load()">Retry</button></div>
+  }
   <input class="form-control mb-3" placeholder="Search by name or NIF..." [(ngModel)]="search" (input)="applyFilter()" />
   <table class="table table-bordered table-hover">
     <thead class="table-dark"><tr><th>NIF</th><th>Name</th><th>Fidelity</th><th>Address</th><th>Contact</th><th>Actions</th></tr></thead>
@@ -22,7 +26,11 @@
           </td>
         </tr>
       }
-      @empty { <tr><td colspan="6" class="text-center text-muted">No clients found.</td></tr> }
+      @empty {
+        @if (!loading && !error) {
+          <tr><td colspan="6" class="text-center text-muted">No clients found.</td></tr>
+        }
+      }
     </tbody>
   </table>
 </div>

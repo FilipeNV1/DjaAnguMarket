@@ -1,7 +1,8 @@
-from rest_framework import viewsets, generics
-from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
+from rest_framework import viewsets, generics, filters
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from .permissions import DjangoModelPermissionsWithView as DjangoModelPermissions
 from rest_framework.response import Response
-
+from rest_framework.views import APIView
 from .models import Supermarket, Section, Employee, Product, Warehouse, Distributor, Client, Purchase, Order
 from .serializers import (
     SupermarketSerializer, SectionSerializer, EmployeeSerializer,
@@ -12,9 +13,19 @@ from .serializers import (
 def _is_ceo(user):
     return user.groups.filter(name='CEO').exists()
 
+class HealthView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({'status': 'ok', 'service': 'DjanGoMarket API'})
+
 class SupermarketViewSet(viewsets.ModelViewSet):
     serializer_class = SupermarketSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['location']
+    ordering_fields = ['id', 'location']
+    ordering = ['id']
 
     def get_queryset(self):
         if _is_ceo(self.request.user):
@@ -25,10 +36,20 @@ class SectionViewSet(viewsets.ModelViewSet):
     serializer_class = SectionSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
     queryset = Section.objects.all()
+    lookup_field = 'sname'
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['sname', 'department']
+    ordering_fields = ['sname', 'department']
+    ordering = ['sname']
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    lookup_field = 'enumber'
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'role', 'contact']
+    ordering_fields = ['enumber', 'name', 'salary']
+    ordering = ['enumber']
 
     def get_queryset(self):
         if _is_ceo(self.request.user):
@@ -53,10 +74,20 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
     queryset = Product.objects.select_related('section_name').all()
+    lookup_field = 'prodid'
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'brand', 'section_name__sname']
+    ordering_fields = ['prodid', 'name', 'price', 'brand']
+    ordering = ['name']
 
 class WarehouseViewSet(viewsets.ModelViewSet):
     serializer_class = WarehouseSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    lookup_field = 'wnumber'
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['area', 'supermarket__location']
+    ordering_fields = ['wnumber', 'area']
+    ordering = ['wnumber']
 
     def get_queryset(self):
         if _is_ceo(self.request.user):
@@ -69,15 +100,30 @@ class DistributorViewSet(viewsets.ModelViewSet):
     serializer_class = DistributorSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
     queryset = Distributor.objects.all()
+    lookup_field = 'email'
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'email', 'contact']
+    ordering_fields = ['name', 'email']
+    ordering = ['name']
 
 class ClientViewSet(viewsets.ModelViewSet):
     serializer_class = ClientSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
     queryset = Client.objects.all()
+    lookup_field = 'nif'
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'nif', 'contact', 'address']
+    ordering_fields = ['nif', 'name', 'fidelity']
+    ordering = ['name']
 
 class PurchaseViewSet(viewsets.ModelViewSet):
     serializer_class = PurchaseSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    lookup_field = 'purchid'
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['purchid', 'client__name', 'supermarket__location']
+    ordering_fields = ['purchid', 'date']
+    ordering = ['-date']
 
     def get_queryset(self):
         if _is_ceo(self.request.user):
@@ -89,6 +135,11 @@ class PurchaseViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    lookup_field = 'orderid'
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['orderid', 'distributor__name', 'supermarket__location']
+    ordering_fields = ['orderid', 'ord_date']
+    ordering = ['-ord_date']
 
     def get_queryset(self):
         if _is_ceo(self.request.user):

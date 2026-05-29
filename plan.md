@@ -6,104 +6,67 @@ Convert DjanGoMarket from a server-side-rendered Django app into a two-tier syst
 - **Backend**: Django REST Framework (DRF) API with JWT authentication — lives in `django/`
 - **Frontend**: Angular SPA consuming the REST API — lives in `angular/`
 
-The existing Django templates/views are kept intact. The API layer is under `/api/`.
+The existing Django templates/views are kept intact under `django/app/templates/` for reference (TP1).
 
 ---
 
-## Status
+## Status: DONE (dev)
 
-### DONE
-
-- [x] `django/` subfolder structure (Django moved from repo root)
-- [x] DRF installed and configured (settings.py: REST_FRAMEWORK, CORS, SIMPLE_JWT)
-- [x] All serializers (`django/app/serializers.py`)
-- [x] All ViewSets with CEO/non-CEO scoping (`django/app/api_views.py`)
-- [x] JWT endpoints + `/api/me/` + DRF router (`django/DjanGoMarket/urls.py`)
-- [x] Angular project scaffolded in `angular/` with `ng new`
-- [x] Core: TypeScript models (interfaces matching DRF serializers)
-- [x] Core: `AuthService` — login, logout, token storage, getCurrentUser
-- [x] Core: `ApiService` — typed HTTP methods for all 9 entities
-- [x] Core: `tokenInterceptor` — attaches Bearer token, handles 401 refresh
-- [x] Core: `authGuard` — redirects to /login if not authenticated
-- [x] Shared: `NavbarComponent` with role-aware links
-- [x] Feature: login component
-- [x] Feature: home dashboard
-- [x] Feature: supermarkets — list, detail, form
-- [x] Feature: sections — list, detail, form
-- [x] Feature: employees — list, detail, form
-- [x] Feature: products — list, detail, form
-- [x] Feature: warehouses — list, detail, form
-- [x] Feature: distributors — list, detail, form
-- [x] Feature: clients — list, detail, form
-- [x] Feature: purchases — list, detail, form (with item rows)
-- [x] Feature: orders — list, detail, form (with item rows)
+- [x] Monorepo structure (`django/` + `angular/`)
+- [x] DRF + JWT + CORS + role-scoped ViewSets
+- [x] All serializers and API endpoints for 9 entities
+- [x] Angular: models, ApiService, AuthService, interceptor, guard
+- [x] Angular: login, home, list/detail/form for all entities
+- [x] App wiring: routes, navbar, Bootstrap, HttpClient + interceptor
+- [x] Environment files (`environment.ts` / `environment.prod.ts`)
+- [x] Dev proxy (`angular/proxy.conf.json`) — Angular calls `/api` without CORS issues
+- [x] Global UI theme (green navbar, brand buttons)
+- [x] `setup.ps1` / `setup.cmd` + `django/smoke_test.py` for one-command local setup
+- [x] API health endpoint `/api/health/`
+- [x] Search/ordering on all ViewSets (`?search=`, `?ordering=`)
+- [x] Role-based navbar and home (CEO/Manager/Cashier/Employee)
+- [x] Loading/error states on all list pages
+- [x] Cross-linking on detail pages (products, sections, purchases, orders, etc.)
+- [x] Smoke tests for all 4 roles
 
 ---
 
-### TODO
+## TODO (delivery)
 
-#### Angular wiring (nothing works until this is done)
-
-- [ ] **`angular/src/app/app.config.ts`** — add `provideHttpClient(withInterceptors([tokenInterceptor]))` so the token interceptor actually runs
-- [ ] **`angular/src/app/app.routes.ts`** — define all routes (login, home, and all 9 entity routes) with `authGuard` on protected ones
-- [ ] **`angular/src/app/app.ts`** — import and render `NavbarComponent` + `RouterOutlet`
-- [ ] **`angular/src/app/app.html`** — replace default content with `<app-navbar>` + `<router-outlet>`
-- [ ] **`angular/src/index.html`** — add Bootstrap CDN link so the UI doesn't look unstyled
-
-#### Validation gaps (low priority, do after wiring)
-
-- [ ] Supermarket form: close_time > opening_time (already in serializer, frontend check is a bonus)
-- [ ] Purchase/Order form: at least one item required (already enforced in component, just verify)
-- [ ] Employee form: salary min 0.01, age min 16 (Validators already added, just verify)
-
-#### Deployment (last step)
-
-- [ ] Add production Angular URL to `CORS_ALLOWED_ORIGINS` in `django/DjanGoMarket/settings.py`
-- [ ] `ng build` output to serve statically or on a separate host
+- [ ] Deploy API to PythonAnywhere (update `CORS_ALLOWED_ORIGINS` with Heroku URL)
+- [ ] Deploy Angular to Heroku (set `environment.prod.ts` apiUrl)
+- [ ] Final TP2 report conclusions + group names in `docs/RELATORIO_TP2.md`
 
 ---
 
-## How to run both together (dev)
+## How to run (dev)
 
-### Terminal 1 — Django
-
+### Backend
 ```bash
 cd django
-source ../venv/bin/activate    # or wherever your venv lives
-python3 manage.py runserver    # runs on http://localhost:8000
+pip install -r requirements.txt
+cp .env.example .env   # or use repo root .env
+python manage.py migrate
+python setup_groups.py
+python populate_db.py
+python manage.py runserver
 ```
 
-### Terminal 2 — Angular
-
+### Frontend
 ```bash
 cd angular
-npm start                      # or: ng serve — runs on http://localhost:4200
+npm install
+npm start
 ```
 
-Angular talks to Django at `http://localhost:8000/api/`.
-Open `http://localhost:4200` in the browser.
+Open **http://localhost:4200** — login: employee `1000`, password `password123`.
 
-Login with any employee number (e.g. `1000`) and password `password123`.
+Or on Windows: `.\run-dev.ps1`
 
 ---
 
-## File structure
+## Architecture
 
 ```
-DjanGoMarket/
-  django/               <- Django backend
-    manage.py
-    app/
-    DjanGoMarket/       <- settings, urls
-    requirements.txt
-    migrate.sh
-    ...
-  angular/              <- Angular frontend
-    src/app/
-      core/             <- models, services, interceptor, guard
-      features/         <- one folder per entity (list/detail/form)
-      shared/           <- navbar
-    package.json
-  .gitignore
-  plan.md
+Browser (Angular :4200)  --JWT JSON-->  Django DRF (:8000)  -->  SQLite
 ```

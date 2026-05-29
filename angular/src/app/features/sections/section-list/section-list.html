@@ -3,6 +3,13 @@
     <h2>Sections</h2>
     @if (canWrite) { <a routerLink="/sections/new" class="btn btn-dark">+ Add</a> }
   </div>
+  @if (loading) { <p class="text-muted">Loading sections...</p> }
+  @if (error) {
+    <div class="alert alert-warning">
+      {{ error }}
+      <button type="button" class="btn btn-sm btn-outline-dark ms-2" (click)="load()">Retry</button>
+    </div>
+  }
   <input class="form-control mb-3" placeholder="Search..." [(ngModel)]="search" (input)="applyFilter()" />
   <table class="table table-bordered table-hover">
     <thead class="table-dark"><tr><th>Name</th><th>Department</th><th>Actions</th></tr></thead>
@@ -19,7 +26,11 @@
           </td>
         </tr>
       }
-      @empty { <tr><td colspan="3" class="text-center text-muted">No sections found.</td></tr> }
+      @empty {
+        @if (!loading && !error) {
+          <tr><td colspan="3" class="text-center text-muted">No sections found.</td></tr>
+        }
+      }
     </tbody>
   </table>
 </div>

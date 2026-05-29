@@ -13,7 +13,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from app.models import (
     Section, Supermarket, Employee, Product, Warehouse, Distributor,
-    Client, Purchase, PurchaseItem, WareHStock, Order
+    Client, Purchase, PurchaseItem, WareHStock, Order, OrderItem
 )
 
 def create_groups():
@@ -52,7 +52,7 @@ def setup_manager_permissions():
         permissions.extend(perms)
     
     # Also give view permissions for other models
-    view_only_models = [Section, Supermarket, Distributor, Client, Purchase, PurchaseItem]
+    view_only_models = [Section, Supermarket, Product, Distributor, Client, Purchase, PurchaseItem]
     for model in view_only_models:
         view_perms = get_model_permissions(model).filter(codename__startswith='view_')
         permissions.extend(view_perms)
@@ -60,7 +60,7 @@ def setup_manager_permissions():
     manager_group.permissions.set(permissions)
     print(f"Manager: {manager_group.permissions.count()} permissions assigned")
     print(f"  - CRUD for: Employee, Supermarket, Warehouse, WareHStock, Order")
-    print(f"  - View for: Section, Supermarket, Distributor, Client, Purchase, PurchaseItem")
+    print(f"  - View for: Section, Supermarket, Product, Distributor, Client, Purchase, PurchaseItem")
 
 def setup_cashier_permissions():
     """Cashier: Permissions for Purchase and PurchaseItem (add, change, delete, view)"""
@@ -92,7 +92,7 @@ def setup_employee_permissions():
     
     models_to_view = [
         Section, Supermarket, Employee, Product, Warehouse, Distributor,
-        Client, Purchase, PurchaseItem, WareHStock
+        Client, Purchase, PurchaseItem, WareHStock, Order, OrderItem,
     ]
     
     permissions = []

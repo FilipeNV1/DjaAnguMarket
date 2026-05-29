@@ -1,0 +1,14 @@
+# Copiar este conteúdo para o ficheiro WSGI no painel PythonAnywhere.
+# Substituir SEUUSER pelo teu username.
+
+import os
+import sys
+
+path = '/home/SEUUSER/DjanGoMarket/django'
+if path not in sys.path:
+    sys.path.insert(0, path)
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DjanGoMarket.settings')
+
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()

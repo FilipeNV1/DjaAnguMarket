@@ -6,7 +6,10 @@
       <div class="card-body">
         <dl class="row">
           <dt class="col-4">Date</dt><dd class="col-8">{{ item.ord_date }}</dd>
-          <dt class="col-4">Distributor</dt><dd class="col-8">{{ item.distributor_name ?? item.distributor }}</dd>
+          <dt class="col-4">Distributor</dt>
+          <dd class="col-8">
+            <a [routerLink]="['/distributors', item.distributor]">{{ item.distributor_name ?? item.distributor }}</a>
+          </dd>
           <dt class="col-4">Total</dt><dd class="col-8">{{ item.calculated_total | number:'1.2-2' }} €</dd>
         </dl>
         <h6>Items (60% price)</h6>
@@ -15,7 +18,7 @@
           <tbody>
             @for (it of item.items; track it.product) {
               <tr>
-                <td>{{ it.product_name }}</td>
+                <td><a [routerLink]="['/products', it.product]">{{ it.product_name }}</a></td>
                 <td>{{ it.quantity }}</td>
                 <td>{{ it.discounted_price | number:'1.2-2' }} €</td>
                 <td>{{ it.quantity * (it.discounted_price ?? 0) | number:'1.2-2' }} €</td>

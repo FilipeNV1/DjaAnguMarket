@@ -19,4 +19,8 @@ export class ProductDetailComponent implements OnInit {
     const id = +this.route.snapshot.params['id'];
     this.api.getProduct(id).subscribe(data => (this.item = data));
   }
+
+  get sectionName(): string {
+    return this.item?.section ?? this.item?.section_name ?? '';
+  }
 }

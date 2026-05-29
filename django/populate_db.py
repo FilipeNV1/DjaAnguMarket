@@ -94,7 +94,7 @@ def populate_employees():
     supermarkets = {s.id: s for s in Supermarket.objects.all()}
     
     employees_data = [
-        {'enumber': 1000, 'name': 'Ricardo CEO', 'role': 'CEO', 'salary': 3000.00, 'age': 55, 'contact': '900000000', 'supermarket_id': 1, 'sex': 'M', 'supervisor': None, 'group': 'CEO'},
+        {'enumber': 1000, 'name': 'Ricardo', 'role': 'Chief Executive Officer', 'salary': 3000.00, 'age': 55, 'contact': '900000000', 'supermarket_id': 1, 'sex': 'M', 'supervisor': None, 'group': 'CEO'},
         {'enumber': 1001, 'name': 'Antonio Silva', 'role': 'Manager', 'salary': 1800.00, 'age': 42, 'contact': '910111213', 'supermarket_id': 1, 'sex': 'M', 'supervisor': None, 'group': 'Manager'},
         {'enumber': 1002, 'name': 'Maria Santos', 'role': 'Cashier Supervisor', 'salary': 1500.00, 'age': 36, 'contact': '920222324', 'supermarket_id': 1, 'sex': 'F', 'supervisor': 1001, 'group': 'Cashier'},
         {'enumber': 1003, 'name': 'Miguel Ferreira', 'role': 'Cashier', 'salary': 850.00, 'age': 25, 'contact': '930333435', 'supermarket_id': 1, 'sex': 'M', 'supervisor': 1002, 'group': 'Cashier'},

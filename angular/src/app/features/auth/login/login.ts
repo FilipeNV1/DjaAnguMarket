@@ -24,7 +24,9 @@ export class LoginComponent {
     if (this.form.invalid) return;
     const { enumber, password } = this.form.value;
     this.auth.login(+enumber, password).subscribe({
-      next: () => this.router.navigate(['/']),
+      next: () => {
+        this.auth.getCurrentUser(true).subscribe(() => this.router.navigate(['/']));
+      },
       error: () => (this.error = 'Invalid employee number or password.'),
     });
   }

@@ -5,6 +5,10 @@
       <a routerLink="/supermarkets/new" class="btn btn-dark">+ Add</a>
     }
   </div>
+  @if (loading) { <p class="text-muted">Loading supermarkets...</p> }
+  @if (error) {
+    <div class="alert alert-warning">{{ error }} <button type="button" class="btn btn-sm btn-outline-dark ms-2" (click)="load()">Retry</button></div>
+  }
   <input class="form-control mb-3" placeholder="Search by location..." [(ngModel)]="search" (input)="applyFilter()" />
   <table class="table table-bordered table-hover">
     <thead class="table-dark">
@@ -29,7 +33,9 @@
         </tr>
       }
       @empty {
-        <tr><td colspan="6" class="text-center text-muted">No supermarkets found.</td></tr>
+        @if (!loading && !error) {
+          <tr><td colspan="6" class="text-center text-muted">No supermarkets found.</td></tr>
+        }
       }
     </tbody>
   </table>

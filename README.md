@@ -1,6 +1,47 @@
 # DjanGoMarket - Supermarket Management System
 
-## Introduction
+## TP2 — Angular + Django REST Framework (current)
+
+This repository is a **monorepo** for Practical Work 2:
+
+| Folder | Purpose |
+|--------|---------|
+| `django/` | Backend API (DRF) + legacy TP1 HTML views |
+| `angular/` | Angular SPA (main UI for TP2) |
+
+### Quick start (development)
+
+**Backend** (terminal 1):
+```bash
+cd django
+pip install -r requirements.txt
+cp .env.example .env          # or use .env at repo root
+python manage.py migrate
+python setup_groups.py
+python populate_db.py
+python manage.py runserver
+```
+
+**Frontend** (terminal 2):
+```bash
+cd angular
+npm install
+npm start
+```
+
+- Angular UI: http://localhost:4200  
+- API: http://localhost:8000/api/  
+- Login: employee `1000`, password `password123`
+
+Windows: double-click **`run-dev.cmd`** (opens 2 terminals — no PowerShell policy needed)
+
+First-time setup: double-click **`setup.cmd`** or run `setup.ps1`
+
+More: `plan.md`, `docs/RELATORIO_TP2.md`, `docs/DEPLOY.md`
+
+---
+
+## Introduction (TP1)
 
 DjanGoMarket is a web-based information system developed to help manage supermarket operations. Our system is built using **Django** platform and uses **SQLite** as the database backend with Django's Object-Relational Mapping (ORM) system. 
 

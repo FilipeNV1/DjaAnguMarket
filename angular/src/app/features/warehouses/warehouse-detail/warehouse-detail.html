@@ -1,11 +1,14 @@
-<div class="container mt-4" style="max-width:600px">
+<div class="container mt-4" style="max-width:640px">
   <a routerLink="/warehouses" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
   @if (item) {
     <div class="card">
       <div class="card-header"><h5 class="mb-0">Warehouse #{{ item.wnumber }}</h5></div>
       <div class="card-body">
         <dl class="row">
-          <dt class="col-5">Supermarket</dt><dd class="col-7">{{ item.supermarket_location ?? item.supermarket }}</dd>
+          <dt class="col-5">Supermarket</dt>
+          <dd class="col-7">
+            <a [routerLink]="['/supermarkets', item.supermarket]">{{ item.supermarket_location ?? item.supermarket }}</a>
+          </dd>
           <dt class="col-5">Area</dt><dd class="col-7">{{ item.area }} m²</dd>
         </dl>
         <h6>Stock</h6>
@@ -13,7 +16,11 @@
           <thead class="table-secondary"><tr><th>Product</th><th>Price</th><th>Qty</th></tr></thead>
           <tbody>
             @for (s of item.stock; track s.product) {
-              <tr><td>{{ s.product_name }}</td><td>{{ s.product_price | number:'1.2-2' }} €</td><td>{{ s.wqty }}</td></tr>
+              <tr>
+                <td><a [routerLink]="['/products', s.product]">{{ s.product_name }}</a></td>
+                <td>{{ s.product_price | number:'1.2-2' }} €</td>
+                <td>{{ s.wqty }}</td>
+              </tr>
             }
             @empty { <tr><td colspan="3" class="text-muted text-center">No stock entries.</td></tr> }
           </tbody>

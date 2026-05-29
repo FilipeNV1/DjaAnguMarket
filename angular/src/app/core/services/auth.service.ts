@@ -1,9 +1,10 @@
+import { environment } from '../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap, throwError } from 'rxjs';
 import { Me } from '../models';
 
-const API = 'http://localhost:8000/api';
+const API = environment.apiUrl;
 const ACCESS_KEY = 'access_token';
 const REFRESH_KEY = 'refresh_token';
 
@@ -16,6 +17,7 @@ export class AuthService {
   login(enumber: number, password: string): Observable<{ access: string; refresh: string }> {
     return this.http.post<{ access: string; refresh: string }>(`${API}/token/`, { enumber, password }).pipe(
       tap(tokens => {
+        this.clearUser();
         localStorage.setItem(ACCESS_KEY, tokens.access);
         localStorage.setItem(REFRESH_KEY, tokens.refresh);
       })
@@ -44,9 +46,12 @@ export class AuthService {
     return !!this.getAccessToken();
   }
 
-  getCurrentUser(): Observable<Me> {
-    if (this.currentUser$.value) {
-      return this.currentUser$.asObservable() as Observable<Me>;
+  getCurrentUser(forceRefresh = false): Observable<Me> {
+    if (!this.isLoggedIn()) {
+      return throwError(() => new Error('Not logged in'));
+    }
+    if (!forceRefresh && this.currentUser$.value) {
+      return of(this.currentUser$.value);
     }
     return this.http.get<Me>(`${API}/me/`).pipe(
       tap(user => this.currentUser$.next(user))

@@ -1,1 +1,85 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
+}
+
+.dm-navbar {
+  background-color: #0c3324 !important;
+  border-bottom: 3px solid #8bda4b;
+  padding: 0.75rem 0;
+}
+
+.dm-navbar .navbar-brand,
+.dm-navbar .nav-link {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.dm-navbar .nav-link.active {
+  color: #8bda4b !important;
+  font-weight: 600;
+}
+
+.dm-navbar .navbar-brand {
+  font-weight: 700;
+}
+
+.btn-brand {
+  background-color: #8bda4b;
+  border-color: #8bda4b;
+  color: #0c3324;
+  font-weight: 600;
+}
+
+.btn-brand:hover {
+  background-color: #7bc93f;
+  border-color: #7bc93f;
+  color: #0c3324;
+}
+
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+}
+
+.card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.table th {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #6c757d;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #eef7e4;
+}
+
+.page-header {
+  margin-bottom: 1.25rem;
+}
+
+.login-card {
+  border: none;
+  border-radius: 12px;
+  border-top: 4px solid #8bda4b;
+}
+
+.home-card {
+  transition: transform 0.15s ease;
+}
+
+.home-card:hover {
+  transform: translateY(-2px);
+  border-color: #8bda4b;
+}
+
+main.container-fluid,
+.container.mt-4 {
+  padding-bottom: 3rem;
+}
