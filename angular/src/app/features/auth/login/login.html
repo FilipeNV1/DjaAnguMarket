@@ -1,0 +1,21 @@
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="card shadow" style="width:380px">
+    <div class="card-body p-4">
+      <h3 class="card-title text-center mb-4">DjanGoMarket</h3>
+      @if (error) {
+        <div class="alert alert-danger">{{ error }}</div>
+      }
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="mb-3">
+          <label class="form-label">Employee Number</label>
+          <input class="form-control" type="number" formControlName="enumber" placeholder="e.g. 1000" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input class="form-control" type="password" formControlName="password" />
+        </div>
+        <button class="btn btn-dark w-100" type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+</div>
