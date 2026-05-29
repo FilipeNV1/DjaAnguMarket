@@ -1,0 +1,16 @@
+<div class="container mt-4" style="max-width:500px">
+  <a routerLink="/clients" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
+  @if (item) {
+    <div class="card">
+      <div class="card-header"><h5 class="mb-0">{{ item.name }}</h5></div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-4">NIF</dt><dd class="col-8">{{ item.nif }}</dd>
+          <dt class="col-4">Fidelity</dt><dd class="col-8">{{ item.fidelity }}</dd>
+          <dt class="col-4">Address</dt><dd class="col-8">{{ item.address }}</dd>
+          <dt class="col-4">Contact</dt><dd class="col-8">{{ item.contact }}</dd>
+        </dl>
+      </div>
+    </div>
+  }
+</div>
