@@ -1,0 +1,20 @@
+<div class="container mt-4" style="max-width:500px">
+  <a routerLink="/sections" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
+  <div class="card">
+    <div class="card-header"><h5 class="mb-0">{{ isEditing ? 'Edit' : 'New' }} Section</h5></div>
+    <div class="card-body">
+      @if (error) { <div class="alert alert-danger">{{ error }}</div> }
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="mb-3">
+          <label class="form-label">Name *</label>
+          <input class="form-control" formControlName="sname" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Department *</label>
+          <input class="form-control" formControlName="department" />
+        </div>
+        <button class="btn btn-dark w-100" type="submit">{{ isEditing ? 'Save' : 'Create' }}</button>
+      </form>
+    </div>
+  </div>
+</div>
