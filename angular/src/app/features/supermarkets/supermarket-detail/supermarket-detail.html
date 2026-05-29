@@ -1,0 +1,21 @@
+<div class="container mt-4" style="max-width:600px">
+  <a routerLink="/supermarkets" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
+  @if (item) {
+    <div class="card">
+      <div class="card-header"><h5 class="mb-0">Supermarket #{{ item.id }}</h5></div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-4">Location</dt><dd class="col-8">{{ item.location }}</dd>
+          <dt class="col-4">Opening</dt><dd class="col-8">{{ item.opening_time }}</dd>
+          <dt class="col-4">Close</dt><dd class="col-8">{{ item.close_time }}</dd>
+          <dt class="col-4">Sections</dt>
+          <dd class="col-8">
+            @for (s of item.sections; track s.sname) {
+              <span class="badge bg-secondary me-1">{{ s.sname }}</span>
+            }
+          </dd>
+        </dl>
+      </div>
+    </div>
+  }
+</div>
