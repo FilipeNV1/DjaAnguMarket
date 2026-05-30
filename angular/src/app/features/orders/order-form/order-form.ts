@@ -6,7 +6,11 @@ import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Supermarket, Distributor, Product, Me } from '../../../core/models';
 
-interface ItemRow { product: number; quantity: number; name: string; }
+interface ItemRow { product: number; quantity: number; name: string; price: number; }
+
+// Orders buy from distributors at 60% of the product price (matches the DRF
+// OrderItemSerializer: discounted_price = product.price * 0.6).
+const ORDER_DISCOUNT = 0.6;
 
 @Component({
   selector: 'app-order-form',
@@ -50,6 +54,9 @@ export class OrderFormComponent implements OnInit {
     return this.products().filter(p => (p.section ?? p.section_name) === section);
   });
 
+  // Running total — recomputes automatically when itemRows (or any quantity) changes.
+  readonly total = computed(() => this.itemRows().reduce((sum, r) => sum + r.quantity * r.price, 0));
+
   constructor(
     private fb: FormBuilder,
     private api: ApiService,
@@ -84,7 +91,12 @@ export class OrderFormComponent implements OnInit {
       this.api.getOrder(this.id).subscribe(o => {
         this.form.patchValue({ ord_date: o.ord_date, supermarket: o.supermarket, distributor: o.distributor });
         this.itemRows.set(
-          (o.items ?? []).map(i => ({ product: i.product, quantity: i.quantity, name: i.product_name ?? '' }))
+          (o.items ?? []).map(i => ({
+            product: i.product,
+            quantity: i.quantity,
+            name: i.product_name ?? '',
+            price: i.discounted_price ?? 0,
+          }))
         );
       });
     }
@@ -114,7 +126,7 @@ export class OrderFormComponent implements OnInit {
       if (rows.some(r => r.product === p.prodid)) {
         return rows.map(r => (r.product === p.prodid ? { ...r, quantity: r.quantity + 1 } : r));
       }
-      return [...rows, { product: p.prodid, quantity: 1, name: p.name }];
+      return [...rows, { product: p.prodid, quantity: 1, name: p.name, price: p.price * ORDER_DISCOUNT }];
     });
     this.closeProductModal();
   }
