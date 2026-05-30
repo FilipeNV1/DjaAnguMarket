@@ -26,7 +26,7 @@ class Employee(AbstractUser):
     enumber = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64)
     role = models.CharField(max_length=32)
-    salary = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
+    salary = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(decimal.Decimal('0.01'))])
     age = models.IntegerField(validators=[MinValueValidator(16)])
     contact = models.CharField(max_length=64)
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
@@ -51,7 +51,7 @@ class Product(models.Model):
     prodid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=128)
     brand = models.CharField(max_length=64)
-    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(decimal.Decimal('0.01'))])
     req_cold = models.BooleanField()
     section_name = models.ForeignKey(Section, on_delete=models.CASCADE)
     def __str__(self):
@@ -100,7 +100,7 @@ class PurchaseItem(models.Model):
     purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(validators=[MinValueValidator(1)])
-    price_at_purchase = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
+    price_at_purchase = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(decimal.Decimal('0.01'))])
     def __str__(self):
         return f"{self.purchase.purchid} - {self.product.name}"
 
