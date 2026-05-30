@@ -29,15 +29,25 @@
         <h6>Items</h6>
         @for (row of itemRows(); track row.product) {
           <div class="d-flex gap-2 mb-2 align-items-center">
-            <span class="flex-grow-1">{{ row.name }}</span>
+            <span class="flex-grow-1">
+              {{ row.name }}
+              <small class="text-muted">{{ row.price | number:'1.2-2' }} € each</small>
+            </span>
             <input class="form-control form-control-sm" type="number" min="1"
                    [ngModel]="row.quantity" (ngModelChange)="updateQuantity(row.product, $event)"
                    [ngModelOptions]="{standalone:true}" style="width:80px" />
+            <span class="text-nowrap text-end" style="width:90px">{{ row.quantity * row.price | number:'1.2-2' }} €</span>
             <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeItem(row.product)">✕</button>
           </div>
         }
         @empty {
           <p class="text-muted small mb-2">No products added yet.</p>
+        }
+        @if (itemRows().length) {
+          <div class="d-flex justify-content-between fw-bold border-top pt-2 mb-3">
+            <span>Total</span>
+            <span>{{ total() | number:'1.2-2' }} €</span>
+          </div>
         }
         <button type="button" class="btn btn-sm btn-outline-secondary mb-3" (click)="openProductModal()">+ Add Product</button>
 

@@ -6,7 +6,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Supermarket, Client, Product, Me } from '../../../core/models';
 
-interface ItemRow { product: number; quantity: number; name: string; }
+interface ItemRow { product: number; quantity: number; name: string; price: number; }
 
 @Component({
   selector: 'app-purchase-form',
@@ -50,6 +50,9 @@ export class PurchaseFormComponent implements OnInit {
     return this.products().filter(p => (p.section ?? p.section_name) === section);
   });
 
+  // Running total — recomputes automatically when itemRows (or any quantity) changes.
+  readonly total = computed(() => this.itemRows().reduce((sum, r) => sum + r.quantity * r.price, 0));
+
   constructor(
     private fb: FormBuilder,
     private api: ApiService,
@@ -84,7 +87,12 @@ export class PurchaseFormComponent implements OnInit {
       this.api.getPurchase(this.id).subscribe(p => {
         this.form.patchValue({ date: p.date?.slice(0, 10), supermarket: p.supermarket, client: p.client });
         this.itemRows.set(
-          (p.items ?? []).map(i => ({ product: i.product, quantity: i.quantity, name: i.product_name ?? '' }))
+          (p.items ?? []).map(i => ({
+            product: i.product,
+            quantity: i.quantity,
+            name: i.product_name ?? '',
+            price: i.price_at_purchase ?? 0,
+          }))
         );
       });
     }
@@ -114,7 +122,7 @@ export class PurchaseFormComponent implements OnInit {
       if (rows.some(r => r.product === p.prodid)) {
         return rows.map(r => (r.product === p.prodid ? { ...r, quantity: r.quantity + 1 } : r));
       }
-      return [...rows, { product: p.prodid, quantity: 1, name: p.name }];
+      return [...rows, { product: p.prodid, quantity: 1, name: p.name, price: p.price }];
     });
     this.closeProductModal();
   }
