@@ -8,27 +8,63 @@
         <span class="badge text-bg-secondary">{{ user.group }}</span>
       </div>
       <div class="card-body">
-        <dl class="row mb-0">
-          <dt class="col-5">Employee #</dt><dd class="col-7">{{ user.enumber }}</dd>
-          <dt class="col-5">Name</dt><dd class="col-7">{{ user.name }}</dd>
-          <dt class="col-5">Role</dt><dd class="col-7">{{ user.role }}</dd>
-          <dt class="col-5">Supermarket</dt><dd class="col-7">{{ user.supermarket_location }}</dd>
-          @if (user.contact) { <dt class="col-5">Contact</dt><dd class="col-7">{{ user.contact }}</dd> }
-          @if (user.age) { <dt class="col-5">Age</dt><dd class="col-7">{{ user.age }}</dd> }
-          @if (user.sex) { <dt class="col-5">Sex</dt><dd class="col-7">{{ user.sex === 'M' ? 'Male' : 'Female' }}</dd> }
-          @if (user.salary) { <dt class="col-5">Salary</dt><dd class="col-7">{{ user.salary | number:'1.2-2' }} €</dd> }
-          @if (user.supervisor_name) { <dt class="col-5">Supervisor</dt><dd class="col-7">{{ user.supervisor_name }}</dd> }
-        </dl>
 
-        <hr />
+        @if (!showProfileForm && !showPasswordForm) {
+          @if (success) { <div class="alert alert-success">{{ success }}</div> }
+          <dl class="row mb-0">
+            <dt class="col-5">Employee #</dt><dd class="col-7">{{ user.enumber }}</dd>
+            <dt class="col-5">Name</dt><dd class="col-7">{{ user.name }}</dd>
+            <dt class="col-5">Role</dt><dd class="col-7">{{ user.role }}</dd>
+            <dt class="col-5">Supermarket</dt><dd class="col-7">{{ user.supermarket_location }}</dd>
+            @if (user.contact) { <dt class="col-5">Contact</dt><dd class="col-7">{{ user.contact }}</dd> }
+            @if (user.age) { <dt class="col-5">Age</dt><dd class="col-7">{{ user.age }}</dd> }
+            @if (user.sex) { <dt class="col-5">Sex</dt><dd class="col-7">{{ user.sex === 'M' ? 'Male' : 'Female' }}</dd> }
+            @if (user.salary) { <dt class="col-5">Salary</dt><dd class="col-7">{{ user.salary | number:'1.2-2' }} €</dd> }
+            @if (user.supervisor_name) { <dt class="col-5">Supervisor</dt><dd class="col-7">{{ user.supervisor_name }}</dd> }
+          </dl>
 
-        @if (success && !showPasswordForm) { <div class="alert alert-success">{{ success }}</div> }
+          <hr />
 
-        @if (!showPasswordForm) {
-          <button class="btn btn-brand" type="button" (click)="togglePasswordForm()">
-            Change Password
-          </button>
-        } @else {
+          <div class="d-flex gap-2">
+            <button class="btn btn-brand" type="button" (click)="toggleProfileForm()">Edit Profile</button>
+            <button class="btn btn-outline-secondary" type="button" (click)="togglePasswordForm()">Change Password</button>
+          </div>
+        }
+
+        @else if (showProfileForm) {
+          <h6 class="mb-3">Edit Profile</h6>
+          @if (profileError) { <div class="alert alert-danger">{{ profileError }}</div> }
+          <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+            <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" formControlName="name" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Contact</label>
+              <input type="text" class="form-control" formControlName="contact" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Age</label>
+              <input type="number" class="form-control" formControlName="age" min="16" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Sex</label>
+              <select class="form-select" formControlName="sex">
+                <option value="">-- select --</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+              </select>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-brand flex-grow-1" type="submit" [disabled]="savingProfile || profileForm.invalid">
+                {{ savingProfile ? 'Saving...' : 'Save Changes' }}
+              </button>
+              <button class="btn btn-outline-secondary" type="button" (click)="toggleProfileForm()">Cancel</button>
+            </div>
+          </form>
+        }
+
+        @else if (showPasswordForm) {
           <h6 class="mb-3">Change Password</h6>
           @if (error) { <div class="alert alert-danger">{{ error }}</div> }
           <form [formGroup]="form" (ngSubmit)="submit()">
@@ -53,6 +89,7 @@
             </div>
           </form>
         }
+
       </div>
     </div>
   }

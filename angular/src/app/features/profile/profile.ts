@@ -14,16 +14,26 @@ import { Me } from '../../core/models';
 export class ProfileComponent implements OnInit {
   user: Me | null = null;
   form: FormGroup;
+  profileForm: FormGroup;
   error = '';
+  profileError = '';
   success = '';
   saving = false;
+  savingProfile = false;
   showPasswordForm = false;
+  showProfileForm = false;
 
   constructor(private auth: AuthService, private fb: FormBuilder) {
     this.form = this.fb.group({
       old_password: ['', Validators.required],
       new_password: ['', [Validators.required, Validators.minLength(8)]],
       confirm_password: ['', Validators.required],
+    });
+    this.profileForm = this.fb.group({
+      name: ['', [Validators.required, Validators.maxLength(64)]],
+      contact: ['', [Validators.required, Validators.maxLength(64)]],
+      age: [null, [Validators.required, Validators.min(16)]],
+      sex: ['', Validators.required],
     });
   }
 
@@ -33,9 +43,23 @@ export class ProfileComponent implements OnInit {
 
   togglePasswordForm(): void {
     this.showPasswordForm = !this.showPasswordForm;
-    this.error = '';
-    this.success = '';
+    this.showProfileForm = false;
+    this.clearMessages();
     this.form.reset();
+  }
+
+  toggleProfileForm(): void {
+    this.showProfileForm = !this.showProfileForm;
+    this.showPasswordForm = false;
+    this.clearMessages();
+    if (this.showProfileForm && this.user) {
+      this.profileForm.patchValue({
+        name: this.user.name,
+        contact: this.user.contact ?? '',
+        age: this.user.age ?? null,
+        sex: this.user.sex ?? '',
+      });
+    }
   }
 
   submit(): void {
@@ -64,13 +88,38 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  saveProfile(): void {
+    this.profileError = '';
+    this.success = '';
+    if (this.profileForm.invalid) return;
+
+    this.savingProfile = true;
+    this.auth.updateProfile(this.profileForm.value).subscribe({
+      next: u => {
+        this.user = u;
+        this.savingProfile = false;
+        this.showProfileForm = false;
+        this.success = 'Profile updated successfully.';
+      },
+      error: err => {
+        this.profileError = this.parseError(err.error);
+        this.savingProfile = false;
+      },
+    });
+  }
+
+  private clearMessages(): void {
+    this.error = '';
+    this.profileError = '';
+    this.success = '';
+  }
+
   private parseError(e: unknown): string {
-    if (!e) return 'Could not change password.';
+    if (!e) return 'Something went wrong.';
     if (typeof e === 'string') return e;
-    const obj = e as Record<string, string[] | string>;
-    if (obj['old_password']) return ([] as string[]).concat(obj['old_password']).join(' ');
-    if (obj['new_password']) return ([] as string[]).concat(obj['new_password']).join(' ');
+    const obj = e as Record<string, unknown>;
     if (obj['detail']) return String(obj['detail']);
-    return JSON.stringify(e);
+    const parts = Object.values(obj).map(v => (Array.isArray(v) ? v.join(' ') : String(v)));
+    return parts.length ? parts.join(' ') : JSON.stringify(e);
   }
 }

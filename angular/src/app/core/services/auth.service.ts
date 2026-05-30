@@ -69,4 +69,10 @@ export class AuthService {
   changePassword(old_password: string, new_password: string): Observable<{ detail: string }> {
     return this.http.post<{ detail: string }>(`${API}/me/password/`, { old_password, new_password });
   }
+
+  updateProfile(data: Partial<Me>): Observable<Me> {
+    return this.http.patch<Me>(`${API}/me/`, data).pipe(
+      tap(user => this.currentUser$.next(user))
+    );
+  }
 }

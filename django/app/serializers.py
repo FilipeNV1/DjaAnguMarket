@@ -288,6 +288,9 @@ class MeSerializer(serializers.ModelSerializer):
             'enumber', 'name', 'role', 'group', 'supermarket_id', 'supermarket_location',
             'salary', 'age', 'contact', 'sex', 'supervisor_name',
         ]
+        # Self-editable via PATCH /api/me/: name, contact, age, sex.
+        # Everything else is read-only so a user can't change their own salary/role/store.
+        read_only_fields = ['enumber', 'role', 'salary']
 
     def get_group(self, obj):
         g = obj.groups.first()

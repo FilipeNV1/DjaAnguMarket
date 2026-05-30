@@ -150,9 +150,10 @@ class OrderViewSet(viewsets.ModelViewSet):
             supermarket=self.request.user.supermarket
         )
 
-class MeView(generics.RetrieveAPIView):
+class MeView(generics.RetrieveUpdateAPIView):
     serializer_class = MeSerializer
     permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'patch', 'head', 'options']
 
     def get_object(self):
         return self.request.user
