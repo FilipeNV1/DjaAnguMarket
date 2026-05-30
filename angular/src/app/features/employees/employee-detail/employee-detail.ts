@@ -3,7 +3,6 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { Employee } from '../../../core/models';
-import { isRoleSameAsGroup } from '../../../core/utils/user-display';
 
 @Component({
   selector: 'app-employee-detail',
@@ -13,7 +12,6 @@ import { isRoleSameAsGroup } from '../../../core/utils/user-display';
 })
 export class EmployeeDetailComponent implements OnInit {
   item: Employee | null = null;
-  isRoleSameAsGroup = isRoleSameAsGroup;
 
   constructor(private route: ActivatedRoute, private api: ApiService) {}
 

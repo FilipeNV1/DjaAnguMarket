@@ -13,10 +13,3 @@ export function userSubtitle(user: Me | Employee): string {
 
   return parts.join(' • ');
 }
-
-/** True when role and permission group carry the same label. */
-export function isRoleSameAsGroup(user: { role?: string; group?: string }): boolean {
-  const role = user.role?.trim();
-  const group = user.group?.trim();
-  return !!role && !!group && role === group;
-}

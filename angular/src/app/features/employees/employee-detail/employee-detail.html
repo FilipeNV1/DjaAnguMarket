@@ -6,7 +6,7 @@
       <div class="card-body">
         <dl class="row mb-0">
           <dt class="col-5">Role</dt><dd class="col-7">{{ item.role }}</dd>
-          @if (!isRoleSameAsGroup(item)) {
+          @if (item.group) {
             <dt class="col-5">Group</dt><dd class="col-7"><span class="badge bg-secondary">{{ item.group }}</span></dd>
           }
           <dt class="col-5">Salary</dt><dd class="col-7">{{ item.salary | number:'1.2-2' }} €</dd>
@@ -22,7 +22,7 @@
             @if (item.supervisor) {
               <a [routerLink]="['/employees', item.supervisor]">{{ item.supervisor }}</a>
             } @else {
-              —
+              -
             }
           </dd>
           <dt class="col-5">Active</dt><dd class="col-7">{{ item.is_active ? 'Yes' : 'No' }}</dd>

@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Employee, Me } from '../../../core/models';
-import { isRoleSameAsGroup } from '../../../core/utils/user-display';
 import { loadList } from '../../../core/utils/list-load';
 
 @Component({
@@ -20,7 +19,6 @@ export class EmployeeListComponent implements OnInit {
   search = '';
   loading = true;
   error = '';
-  isRoleSameAsGroup = isRoleSameAsGroup;
 
   constructor(private api: ApiService, private auth: AuthService) {}
 

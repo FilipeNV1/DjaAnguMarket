@@ -19,7 +19,7 @@
           <td><a [routerLink]="['/employees', e.enumber]">{{ e.name }}</a></td>
           <td>{{ e.role }}</td>
           <td>
-            @if (e.group && !isRoleSameAsGroup(e)) {
+            @if (e.group) {
               <span class="badge bg-secondary">{{ e.group }}</span>
             } @else {
               <span class="text-muted">—</span>
