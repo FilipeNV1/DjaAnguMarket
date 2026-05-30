@@ -111,4 +111,9 @@ export interface Me {
   group: string;
   supermarket_id: number;
   supermarket_location: string;
+  salary?: number;
+  age?: number;
+  contact?: string;
+  sex?: string;
+  supervisor_name?: string | null;
 }

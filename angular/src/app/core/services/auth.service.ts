@@ -65,4 +65,8 @@ export class AuthService {
   clearUser(): void {
     this.currentUser$.next(null);
   }
+
+  changePassword(old_password: string, new_password: string): Observable<{ detail: string }> {
+    return this.http.post<{ detail: string }>(`${API}/me/password/`, { old_password, new_password });
+  }
 }

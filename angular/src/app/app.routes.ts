@@ -8,6 +8,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '', loadComponent: () => import('./features/home/home').then(m => m.HomeComponent) },
+      { path: 'profile', loadComponent: () => import('./features/profile/profile').then(m => m.ProfileComponent) },
 
       { path: 'supermarkets', loadComponent: () => import('./features/supermarkets/supermarket-list/supermarket-list').then(m => m.SupermarketListComponent) },
       { path: 'supermarkets/new', loadComponent: () => import('./features/supermarkets/supermarket-form/supermarket-form').then(m => m.SupermarketFormComponent) },

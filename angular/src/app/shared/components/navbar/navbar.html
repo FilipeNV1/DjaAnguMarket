@@ -13,9 +13,9 @@
         }
       </ul>
       @if (user) {
-        <span class="navbar-text me-3 text-light">
-          {{ user.name }} <span class="badge text-bg-light text-dark">{{ user.group }}</span>
-        </span>
+        <a routerLink="/profile" routerLinkActive="active" class="navbar-text me-3 text-light text-decoration-none">
+          <i class="bi bi-person-circle me-1"></i>{{ user.name }} <span class="badge text-bg-light text-dark">{{ user.group }}</span>
+        </a>
         <button class="btn btn-outline-light btn-sm" (click)="logout()">Logout</button>
       }
     </div>
