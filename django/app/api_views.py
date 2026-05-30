@@ -3,6 +3,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .permissions import DjangoModelPermissionsWithView as DjangoModelPermissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from .models import Supermarket, Section, Employee, Product, Warehouse, Distributor, Client, Purchase, Order
 from .serializers import (
     SupermarketSerializer, SectionSerializer, EmployeeSerializer,
@@ -154,3 +156,27 @@ class MeView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+class ChangePasswordView(APIView):
+    """Allow the logged-in user to change their own password."""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+
+        if not old_password or not new_password:
+            return Response(
+                {'detail': 'Both old_password and new_password are required.'}, status=400
+            )
+        if not user.check_password(old_password):
+            return Response({'old_password': ['Current password is incorrect.']}, status=400)
+        try:
+            validate_password(new_password, user)
+        except DjangoValidationError as e:
+            return Response({'new_password': list(e.messages)}, status=400)
+
+        user.set_password(new_password)
+        user.save()
+        return Response({'detail': 'Password updated successfully.'})

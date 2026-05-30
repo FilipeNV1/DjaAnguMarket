@@ -78,4 +78,5 @@ urlpatterns = [
     path('api/token/', EmployeeTokenObtainPairView.as_view(), name='token_obtain'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/me/', api_views.MeView.as_view(), name='api_me'),
+    path('api/me/password/', api_views.ChangePasswordView.as_view(), name='api_change_password'),
 ]

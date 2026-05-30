@@ -280,10 +280,14 @@ class MeSerializer(serializers.ModelSerializer):
     group = serializers.SerializerMethodField()
     supermarket_id = serializers.IntegerField(source='supermarket.id', read_only=True)
     supermarket_location = serializers.CharField(source='supermarket.location', read_only=True)
+    supervisor_name = serializers.CharField(source='supervisor.name', read_only=True, default=None)
 
     class Meta:
         model = Employee
-        fields = ['enumber', 'name', 'role', 'group', 'supermarket_id', 'supermarket_location']
+        fields = [
+            'enumber', 'name', 'role', 'group', 'supermarket_id', 'supermarket_location',
+            'salary', 'age', 'contact', 'sex', 'supervisor_name',
+        ]
 
     def get_group(self, obj):
         g = obj.groups.first()
