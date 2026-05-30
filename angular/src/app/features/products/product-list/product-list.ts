@@ -32,7 +32,7 @@ export class ProductListComponent implements OnInit {
     loadList(() => this.api.getProducts(), {
       onData: data => { this.items = data; this.applyFilter(); },
       onLoading: v => (this.loading = v),
-      onError: () => (this.error = 'Could not load products. Make sure Django is running and you are logged in.'),
+      onError: msg => (this.error = msg),
     });
   }
 
