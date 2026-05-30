@@ -59,7 +59,7 @@ class Product(models.Model):
 
 class Warehouse(models.Model):
     wnumber = models.AutoField(primary_key=True)
-    area = models.CharField(max_length=64)
+    area = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, through='WareHStock')
     def __str__(self):

@@ -52,7 +52,7 @@ export class PurchaseFormComponent implements OnInit {
     if (this.id) {
       this.isEditing = true;
       this.api.getPurchase(this.id).subscribe(p => {
-        this.form.patchValue({ date: p.date, supermarket: p.supermarket, client: p.client });
+        this.form.patchValue({ date: p.date?.slice(0, 10), supermarket: p.supermarket, client: p.client });
         this.itemRows = (p.items ?? []).map(i => ({
           product: i.product,
           quantity: i.quantity,

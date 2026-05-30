@@ -220,9 +220,9 @@ def populate_warehouses():
     supermarkets = {s.id: s for s in Supermarket.objects.all()}
     
     warehouses = [
-        Warehouse(wnumber=1, area='Warehouse Aveiro', supermarket=supermarkets[1]),
-        Warehouse(wnumber=2, area='Warehouse Estremoz', supermarket=supermarkets[2]),
-        Warehouse(wnumber=3, area='Warehouse Lisboa', supermarket=supermarkets[3]),
+        Warehouse(wnumber=1, area=1200, supermarket=supermarkets[1]),
+        Warehouse(wnumber=2, area=800, supermarket=supermarkets[2]),
+        Warehouse(wnumber=3, area=1500, supermarket=supermarkets[3]),
     ]
     Warehouse.objects.bulk_create(warehouses)
     print(f"Created {len(warehouses)} warehouses")
