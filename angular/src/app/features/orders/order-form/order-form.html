@@ -27,20 +27,87 @@
         </div>
 
         <h6>Items</h6>
-        @for (row of itemRows; track $index) {
+        @for (row of itemRows(); track row.product) {
           <div class="d-flex gap-2 mb-2 align-items-center">
-            <select class="form-select form-select-sm" [(ngModel)]="row.product" [ngModelOptions]="{standalone:true}"
-              (change)="onProductChange($index, row.product)">
-              @for (p of products; track p.prodid) { <option [value]="p.prodid">{{ p.name }}</option> }
-            </select>
-            <input class="form-control form-control-sm" type="number" min="1" [(ngModel)]="row.quantity" [ngModelOptions]="{standalone:true}" style="width:80px" />
-            <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeItem($index)">✕</button>
+            <span class="flex-grow-1">{{ row.name }}</span>
+            <input class="form-control form-control-sm" type="number" min="1"
+                   [ngModel]="row.quantity" (ngModelChange)="updateQuantity(row.product, $event)"
+                   [ngModelOptions]="{standalone:true}" style="width:80px" />
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeItem(row.product)">✕</button>
           </div>
         }
-        <button type="button" class="btn btn-sm btn-outline-secondary mb-3" (click)="addItem()">+ Add Product</button>
+        @empty {
+          <p class="text-muted small mb-2">No products added yet.</p>
+        }
+        <button type="button" class="btn btn-sm btn-outline-secondary mb-3" (click)="openProductModal()">+ Add Product</button>
 
         <button class="btn btn-dark w-100" type="submit">{{ isEditing ? 'Save' : 'Create' }}</button>
       </form>
     </div>
   </div>
 </div>
+
+@if (showProductModal()) {
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal d-block" tabindex="-1" (click)="closeProductModal()">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Product</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="closeProductModal()"></button>
+        </div>
+        <div class="modal-body">
+          <input class="form-control mb-3" placeholder="Search all products by name or brand..."
+                 [ngModel]="modalSearch()" (ngModelChange)="modalSearch.set($event)" [ngModelOptions]="{standalone:true}" />
+
+          @if (modalSearch().trim()) {
+            <div class="list-group">
+              @for (p of searchResults(); track p.prodid) {
+                <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                        (click)="pickProduct(p)">
+                  <span>
+                    {{ p.name }} <small class="text-muted">{{ p.brand }} · {{ p.section ?? p.section_name }}</small>
+                    @if (isAdded(p.prodid)) { <span class="badge text-bg-success ms-1">in list</span> }
+                  </span>
+                  <span class="text-nowrap">{{ p.price | number:'1.2-2' }} €</span>
+                </button>
+              }
+              @empty { <p class="text-muted text-center mb-0 py-3">No products match "{{ modalSearch() }}".</p> }
+            </div>
+          } @else {
+            <div class="row g-0 border rounded-3 overflow-hidden" style="min-height:320px">
+              <div class="col-4 border-end bg-light">
+                <div class="list-group list-group-flush section-list">
+                  @for (s of sectionNames(); track s) {
+                    <button type="button" class="list-group-item list-group-item-action"
+                            [class.active]="s === selectedSection()" (click)="selectSection(s)">
+                      {{ s }}
+                    </button>
+                  }
+                </div>
+              </div>
+              <div class="col-8">
+                <div class="list-group list-group-flush">
+                  @for (p of sectionProducts(); track p.prodid) {
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                            (click)="pickProduct(p)">
+                      <span>
+                        {{ p.name }} <small class="text-muted">{{ p.brand }}</small>
+                        @if (isAdded(p.prodid)) { <span class="badge text-bg-success ms-1">in list</span> }
+                      </span>
+                      <span class="text-nowrap">{{ p.price | number:'1.2-2' }} €</span>
+                    </button>
+                  }
+                  @empty { <p class="text-muted text-center mb-0 py-3">No products in this section.</p> }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeProductModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

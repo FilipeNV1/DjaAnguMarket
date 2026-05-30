@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { DecimalPipe } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Supermarket, Distributor, Product, Me } from '../../../core/models';
@@ -10,18 +11,44 @@ interface ItemRow { product: number; quantity: number; name: string; }
 @Component({
   selector: 'app-order-form',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, FormsModule],
+  imports: [ReactiveFormsModule, RouterLink, FormsModule, DecimalPipe],
   templateUrl: './order-form.html',
 })
 export class OrderFormComponent implements OnInit {
   form: FormGroup;
   supermarkets: Supermarket[] = [];
   distributors: Distributor[] = [];
-  products: Product[] = [];
-  itemRows: ItemRow[] = [];
   isEditing = false;
   id: number | null = null;
   error = '';
+
+  // --- Reactive product-picker state, modelled with signals ---
+  readonly products = signal<Product[]>([]);
+  readonly itemRows = signal<ItemRow[]>([]);
+  readonly showProductModal = signal(false);
+  readonly modalSearch = signal('');
+  readonly selectedSection = signal<string | null>(null);
+
+  // Derived state via computed() — memoized, only recomputes when a dependency changes.
+  readonly sectionNames = computed(() =>
+    [...new Set(this.products().map(p => p.section ?? p.section_name).filter(Boolean))].sort((a, b) =>
+      a.localeCompare(b)
+    )
+  );
+
+  readonly searchResults = computed(() => {
+    const q = this.modalSearch().trim().toLowerCase();
+    if (!q) return [];
+    return this.products().filter(
+      p => p.name.toLowerCase().includes(q) || (p.brand?.toLowerCase().includes(q) ?? false)
+    );
+  });
+
+  readonly sectionProducts = computed(() => {
+    const section = this.selectedSection();
+    if (!section) return [];
+    return this.products().filter(p => (p.section ?? p.section_name) === section);
+  });
 
   constructor(
     private fb: FormBuilder,
@@ -40,7 +67,10 @@ export class OrderFormComponent implements OnInit {
   ngOnInit(): void {
     this.api.getSupermarkets().subscribe(s => (this.supermarkets = s));
     this.api.getDistributors().subscribe(d => (this.distributors = d));
-    this.api.getProducts().subscribe(p => (this.products = p));
+    this.api.getProducts().subscribe(p => {
+      this.products.set(p);
+      if (!this.selectedSection()) this.selectedSection.set(this.sectionNames()[0] ?? null);
+    });
     this.auth.getCurrentUser().subscribe((u: Me) => {
       if (u.group !== 'CEO') {
         this.form.patchValue({ supermarket: u.supermarket_id });
@@ -53,35 +83,57 @@ export class OrderFormComponent implements OnInit {
       this.isEditing = true;
       this.api.getOrder(this.id).subscribe(o => {
         this.form.patchValue({ ord_date: o.ord_date, supermarket: o.supermarket, distributor: o.distributor });
-        this.itemRows = (o.items ?? []).map(i => ({
-          product: i.product,
-          quantity: i.quantity,
-          name: i.product_name ?? '',
-        }));
+        this.itemRows.set(
+          (o.items ?? []).map(i => ({ product: i.product, quantity: i.quantity, name: i.product_name ?? '' }))
+        );
       });
     }
   }
 
-  addItem(): void {
-    if (this.products.length === 0) return;
-    const first = this.products[0];
-    this.itemRows.push({ product: first.prodid, quantity: 1, name: first.name });
+  // --- Product picker modal ---
+  openProductModal(): void {
+    this.modalSearch.set('');
+    if (!this.selectedSection()) this.selectedSection.set(this.sectionNames()[0] ?? null);
+    this.showProductModal.set(true);
   }
 
-  removeItem(i: number): void { this.itemRows.splice(i, 1); }
+  closeProductModal(): void {
+    this.showProductModal.set(false);
+  }
 
-  onProductChange(index: number, prodid: number): void {
-    const found = this.products.find(p => p.prodid === +prodid);
-    if (found) this.itemRows[index].name = found.name;
+  selectSection(section: string): void {
+    this.selectedSection.set(section);
+  }
+
+  isAdded(prodid: number): boolean {
+    return this.itemRows().some(r => r.product === prodid);
+  }
+
+  pickProduct(p: Product): void {
+    this.itemRows.update(rows => {
+      if (rows.some(r => r.product === p.prodid)) {
+        return rows.map(r => (r.product === p.prodid ? { ...r, quantity: r.quantity + 1 } : r));
+      }
+      return [...rows, { product: p.prodid, quantity: 1, name: p.name }];
+    });
+    this.closeProductModal();
+  }
+
+  updateQuantity(prodid: number, quantity: number): void {
+    this.itemRows.update(rows => rows.map(r => (r.product === prodid ? { ...r, quantity } : r)));
+  }
+
+  removeItem(prodid: number): void {
+    this.itemRows.update(rows => rows.filter(r => r.product !== prodid));
   }
 
   submit(): void {
     if (this.form.invalid) return;
-    if (this.itemRows.length === 0) { this.error = 'At least one product is required.'; return; }
+    if (this.itemRows().length === 0) { this.error = 'At least one product is required.'; return; }
     this.error = '';
     const data = {
       ...this.form.getRawValue(),
-      item_data: this.itemRows.map(r => ({ product: r.product, quantity: r.quantity })),
+      item_data: this.itemRows().map(r => ({ product: r.product, quantity: r.quantity })),
     };
     const req = this.isEditing
       ? this.api.updateOrder(this.id!, data)

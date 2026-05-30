@@ -64,6 +64,12 @@ body {
   cursor: pointer;
 }
 
+/* Selected section in the product-picker modal: green to match the navbar */
+.section-list .list-group-item.active {
+  background-color: #0c3324;
+  border-color: #0c3324;
+}
+
 .page-header {
   margin-bottom: 1.25rem;
 }
