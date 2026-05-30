@@ -12,12 +12,13 @@
           <dt class="col-5">Area</dt><dd class="col-7">{{ item.area }} m²</dd>
         </dl>
         <h6>Stock</h6>
-        <table class="table table-sm table-bordered">
-          <thead class="table-secondary"><tr><th>Product</th><th>Price</th><th>Qty</th></tr></thead>
+        <div class="table-responsive rounded-3 border">
+        <table class="table table-sm table-hover align-middle mb-0">
+          <thead class="table-dark"><tr><th>Product</th><th>Price</th><th>Qty</th></tr></thead>
           <tbody>
             @for (s of item.stock; track s.product) {
-              <tr>
-                <td><a [routerLink]="['/products', s.product]">{{ s.product_name }}</a></td>
+              <tr class="clickable-row" [routerLink]="['/products', s.product]">
+                <td>{{ s.product_name }}</td>
                 <td>{{ s.product_price | number:'1.2-2' }} €</td>
                 <td>{{ s.wqty }}</td>
               </tr>
@@ -25,6 +26,7 @@
             @empty { <tr><td colspan="3" class="text-muted text-center">No stock entries.</td></tr> }
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   }

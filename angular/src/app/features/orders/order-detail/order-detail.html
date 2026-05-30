@@ -13,12 +13,13 @@
           <dt class="col-4">Total</dt><dd class="col-8">{{ item.calculated_total | number:'1.2-2' }} €</dd>
         </dl>
         <h6>Items (60% price)</h6>
-        <table class="table table-sm table-bordered">
-          <thead class="table-secondary"><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th></tr></thead>
+        <div class="table-responsive rounded-3 border">
+        <table class="table table-sm table-hover align-middle mb-0">
+          <thead class="table-dark"><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th></tr></thead>
           <tbody>
             @for (it of item.items; track it.product) {
-              <tr>
-                <td><a [routerLink]="['/products', it.product]">{{ it.product_name }}</a></td>
+              <tr class="clickable-row" [routerLink]="['/products', it.product]">
+                <td>{{ it.product_name }}</td>
                 <td>{{ it.quantity }}</td>
                 <td>{{ it.discounted_price | number:'1.2-2' }} €</td>
                 <td>{{ it.quantity * (it.discounted_price ?? 0) | number:'1.2-2' }} €</td>
@@ -27,6 +28,7 @@
             @empty { <tr><td colspan="4" class="text-muted text-center">No items.</td></tr> }
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   }
