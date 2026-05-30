@@ -60,6 +60,10 @@ body {
   background-color: #eef7e4;
 }
 
+.clickable-row {
+  cursor: pointer;
+}
+
 .page-header {
   margin-bottom: 1.25rem;
 }

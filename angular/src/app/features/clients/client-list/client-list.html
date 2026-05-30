@@ -8,17 +8,18 @@
     <div class="alert alert-warning">{{ error }} <button type="button" class="btn btn-sm btn-outline-dark ms-2" (click)="load()">Retry</button></div>
   }
   <input class="form-control mb-3" placeholder="Search by name or NIF..." [(ngModel)]="search" (input)="applyFilter()" />
-  <table class="table table-bordered table-hover">
+<div class="table-responsive rounded-3 border shadow-sm">
+  <table class="table table-hover align-middle mb-0">
     <thead class="table-dark"><tr><th>NIF</th><th>Name</th><th>Fidelity</th><th>Address</th><th>Contact</th><th>Actions</th></tr></thead>
     <tbody>
       @for (c of filtered; track c.nif) {
-        <tr>
-          <td><a [routerLink]="['/clients', c.nif]">{{ c.nif }}</a></td>
+        <tr class="clickable-row" [routerLink]="['/clients', c.nif]">
+          <td>{{ c.nif }}</td>
           <td>{{ c.name }}</td>
           <td>{{ c.fidelity }}</td>
           <td>{{ c.address }}</td>
           <td>{{ c.contact }}</td>
-          <td>
+          <td (click)="$event.stopPropagation()">
             @if (canWrite) {
               <a [routerLink]="['/clients', c.nif, 'edit']" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
               <button class="btn btn-sm btn-outline-danger" (click)="delete(c.nif)">Delete</button>
@@ -33,4 +34,5 @@
       }
     </tbody>
   </table>
+  </div>
 </div>

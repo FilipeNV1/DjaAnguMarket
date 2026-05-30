@@ -11,14 +11,15 @@
     </div>
   }
   <input class="form-control mb-3" placeholder="Search..." [(ngModel)]="search" (input)="applyFilter()" />
-  <table class="table table-bordered table-hover">
+  <div class="table-responsive rounded-3 border shadow-sm">
+  <table class="table table-hover align-middle mb-0">
     <thead class="table-dark"><tr><th>Name</th><th>Department</th><th>Actions</th></tr></thead>
     <tbody>
       @for (s of filtered; track s.sname) {
-        <tr>
-          <td><a [routerLink]="['/sections', s.sname]">{{ s.sname }}</a></td>
+        <tr class="clickable-row" [routerLink]="['/sections', s.sname]">
+          <td>{{ s.sname }}</td>
           <td>{{ s.department }}</td>
-          <td>
+          <td (click)="$event.stopPropagation()">
             @if (canWrite) {
               <a [routerLink]="['/sections', s.sname, 'edit']" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
               <button class="btn btn-sm btn-outline-danger" (click)="delete(s.sname)">Delete</button>
@@ -33,4 +34,5 @@
       }
     </tbody>
   </table>
+  </div>
 </div>
