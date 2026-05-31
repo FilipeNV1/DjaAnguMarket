@@ -3,7 +3,7 @@
     <h2 class="fw-bold mb-0 text-dark">
       <i class="bi bi-receipt text-muted me-2" style="font-size: 1.5rem"></i>Purchases
     </h2>
-    @if (canCreate) {
+    @if (canWrite) {
       <a routerLink="/purchases/new" class="btn btn-add">
         <i class="bi bi-plus-lg me-2"></i>Add
       </a>
@@ -28,7 +28,7 @@
                 <td class="fw-semibold text-dark">{{ p.client_name ?? '-' }}</td>
                 <td>{{ p.calculated_total | number:'1.2-2' }} €</td>
                 <td class="text-end pe-4" (click)="$event.stopPropagation()">
-                  @if (canManage) {
+                  @if (canWrite) {
                     @if (pendingDelete === p.purchid) {
                       <span class="text-muted small me-2">Delete?</span>
                       <button class="btn btn-sm btn-danger me-1" (click)="confirmDelete(p.purchid)">Yes</button>

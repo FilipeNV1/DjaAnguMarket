@@ -46,9 +46,7 @@ export class PurchaseListComponent implements OnInit {
       : this.items;
   }
 
-  get canCreate(): boolean { return (this.user?.group ?? '') !== 'Employee'; }
-
-  get canManage(): boolean {
+  get canWrite(): boolean {
     const g = this.user?.group;
     return g === 'CEO' || g === 'Manager' || g === 'Cashier';
   }

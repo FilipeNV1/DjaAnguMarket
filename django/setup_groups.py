@@ -40,50 +40,53 @@ def setup_ceo_permissions():
     print(f"CEO: {ceo_group.permissions.count()} permissions assigned (all permissions)")
 
 def setup_manager_permissions():
-    """Manager: Standard permissions for Employee, Supermarket, Warehouse, WareHStock and Order; view permissions for other models"""
+    """Manager: Full CRUD except read-only on Product, Section, Distributor"""
     print("\nSetting up Manager permissions...")
     manager_group = Group.objects.get(name='Manager')
-    
-    models_with_crud = [Employee, Supermarket, Warehouse, WareHStock, Order]
+
+    models_with_crud = [Employee, Supermarket, Warehouse, WareHStock, Client, Purchase, PurchaseItem, Order, OrderItem]
     permissions = []
-    
+
     for model in models_with_crud:
         perms = get_model_permissions(model)
         permissions.extend(perms)
-    
-    # Also give view permissions for other models
-    view_only_models = [Section, Supermarket, Product, Distributor, Client, Purchase, PurchaseItem]
+
+    # Read-only on Product, Section, Distributor
+    view_only_models = [Section, Product, Distributor]
     for model in view_only_models:
         view_perms = get_model_permissions(model).filter(codename__startswith='view_')
         permissions.extend(view_perms)
-    
+
     manager_group.permissions.set(permissions)
     print(f"Manager: {manager_group.permissions.count()} permissions assigned")
-    print(f"  - CRUD for: Employee, Supermarket, Warehouse, WareHStock, Order")
-    print(f"  - View for: Section, Supermarket, Product, Distributor, Client, Purchase, PurchaseItem")
+    print(f"  - CRUD for: Employee, Supermarket, Warehouse, Client, Purchase, Order")
+    print(f"  - View for: Section, Product, Distributor")
 
 def setup_cashier_permissions():
-    """Cashier: Permissions for Purchase and PurchaseItem (add, change, delete, view)"""
+    """Cashier: CRUD on Purchase only; view-only on everything else"""
     print("\nSetting up Cashier permissions...")
     cashier_group = Group.objects.get(name='Cashier')
-    
+
     models_with_crud = [Purchase, PurchaseItem]
     permissions = []
-    
+
     for model in models_with_crud:
         perms = get_model_permissions(model)
         permissions.extend(perms)
-    
-    # Also give view permissions for related models
-    view_only_models = [Product, Client, Warehouse, WareHStock, Supermarket]
+
+    # View-only on all other models
+    view_only_models = [
+        Section, Supermarket, Employee, Product, Warehouse,
+        Distributor, Client, WareHStock, Order, OrderItem,
+    ]
     for model in view_only_models:
         view_perms = get_model_permissions(model).filter(codename__startswith='view_')
         permissions.extend(view_perms)
-    
+
     cashier_group.permissions.set(permissions)
     print(f"Cashier: {cashier_group.permissions.count()} permissions assigned")
     print(f"  - CRUD for: Purchase, PurchaseItem")
-    print(f"  - View for: Product, Client, Warehouse, WareHStock, Supermarket")
+    print(f"  - View for: all other models")
 
 def setup_employee_permissions():
     """Employee: View-only permissions for all models"""
