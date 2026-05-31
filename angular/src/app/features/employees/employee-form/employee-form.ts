@@ -78,7 +78,9 @@ export class EmployeeFormComponent implements OnInit {
   submit(): void {
     if (this.form.invalid) return;
     this.error = '';
-    const data = this.form.getRawValue();
+    const raw = this.form.getRawValue();
+    const toNullableInt = (v: unknown) => (v != null && v !== '' && v !== 'null') ? Number(v) : null;
+    const data = { ...raw, supervisor: toNullableInt(raw.supervisor) };
     const req = this.isEditing
       ? this.api.updateEmployee(this.id!, data)
       : this.api.createEmployee(data);

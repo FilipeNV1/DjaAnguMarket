@@ -141,8 +141,10 @@ export class PurchaseFormComponent implements OnInit {
     if (this.form.invalid) return;
     if (this.itemRows().length === 0) { this.error = 'At least one product is required.'; return; }
     this.error = '';
+    const raw = this.form.getRawValue();
     const data = {
-      ...this.form.getRawValue(),
+      ...raw,
+      client: (raw.client != null && raw.client !== '' && raw.client !== 'null') ? Number(raw.client) : null,
       item_data: this.itemRows().map(r => ({ product: r.product, quantity: r.quantity })),
     };
     const req = this.isEditing

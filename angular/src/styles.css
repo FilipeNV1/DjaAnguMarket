@@ -188,16 +188,23 @@ main.container-fluid,
 }
 
 .card-body input[type="checkbox"] {
-  width: 1.5em;
-  height: 1.5em;
-  border: 1px solid #e5e7eb;
+  width: 1.1em;
+  height: 1.1em;
+  margin-top: 0.2em;
+  flex-shrink: 0;
+  border: 1.5px solid #ced4da;
   border-radius: 0.25em;
   appearance: none;
+  cursor: pointer;
 }
 
 .card-body input[type="checkbox"]:checked {
   background-color: #8bda4b;
   border-color: #8bda4b;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%230c3324' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' d='m4 10 4 4 8-8'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 0.8em;
 }
 
 .card-body input:disabled,
