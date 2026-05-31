@@ -1,19 +1,19 @@
-<div class="container mt-4">
-  @if (user) {
-    <div class="mb-4">
-      <h2>Welcome, {{ user.name }}</h2>
-      <p class="text-muted">{{ userSubtitle(user) }}</p>
-    </div>
-  }
-  <div class="row g-3">
-    @for (item of menuItems; track item.link) {
-      <div class="col-6 col-md-4 col-lg-3">
-        <a [routerLink]="item.link" class="card text-decoration-none text-dark h-100 home-card">
-          <div class="card-body text-center py-4">
-            <h5 class="card-title mb-0">{{ item.label }}</h5>
-          </div>
-        </a>
-      </div>
-    }
-  </div>
-</div>
+<div class="container mt-4">
+  @if (user) {
+    <div class="mb-4">
+      <h2>Welcome, {{ user.name }}</h2>
+      <p class="text-muted">{{ userSubtitle(user) }}</p>
+    </div>
+  }
+  <div class="row g-3">
+    @for (item of menuItems; track item.link) {
+      <div class="col-6 col-md-4 col-lg-3">
+        <a [routerLink]="item.link" class="card text-decoration-none text-dark h-100 home-card">
+          <div class="card-body text-center py-4">
+            <h5 class="card-title mb-0">{{ item.label }}</h5>
+          </div>
+        </a>
+      </div>
+    }
+  </div>
+</div>
