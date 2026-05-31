@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './shared/components/navbar/navbar';
 
 @Component({
@@ -9,15 +8,5 @@ import { NavbarComponent } from './shared/components/navbar/navbar';
   imports: [RouterOutlet, NavbarComponent],
   templateUrl: './app.html',
 })
-export class App {
-  showNavbar = false;
 
-  constructor(private router: Router) {
-    this.router.events
-      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe(e => {
-        this.showNavbar = !e.urlAfterRedirects.startsWith('/login');
-      });
-    this.showNavbar = !this.router.url.startsWith('/login');
-  }
-}
+export class App {}

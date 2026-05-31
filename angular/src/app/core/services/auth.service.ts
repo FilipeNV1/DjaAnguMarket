@@ -46,6 +46,10 @@ export class AuthService {
     return !!this.getAccessToken();
   }
 
+  get user$() {
+    return this.currentUser$.asObservable();
+  }
+
   getCurrentUser(forceRefresh = false): Observable<Me> {
     if (!this.isLoggedIn()) {
       return throwError(() => new Error('Not logged in'));

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { Me } from '../../../core/models';
-import { NavItem, navItemsForGroup } from '../../../core/utils/role-access';
+import { NAV_ITEMS, NavItem, navItemsForGroup } from '../../../core/utils/role-access';
 
 @Component({
   selector: 'app-navbar',
@@ -11,17 +11,19 @@ import { NavItem, navItemsForGroup } from '../../../core/utils/role-access';
   templateUrl: './navbar.html',
 })
 export class NavbarComponent implements OnInit {
+
   user: Me | null = null;
   menuItems: NavItem[] = [];
 
   constructor(private auth: AuthService, private router: Router) {}
 
   ngOnInit(): void {
+    this.auth.user$.subscribe(u => {
+      this.user = u;
+      this.menuItems = u ? navItemsForGroup(u.group) : NAV_ITEMS;
+    });
     if (this.auth.isLoggedIn()) {
-      this.auth.getCurrentUser(true).subscribe(u => {
-        this.user = u;
-        this.menuItems = navItemsForGroup(u.group);
-      });
+      this.auth.getCurrentUser(true).subscribe();
     }
   }
 

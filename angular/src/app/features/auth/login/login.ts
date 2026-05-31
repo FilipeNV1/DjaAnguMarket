@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -10,10 +10,19 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './login.html',
 })
 export class LoginComponent {
+
   form: FormGroup;
   error = '';
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/']);
+    }
     this.form = this.fb.group({
       enumber: ['', Validators.required],
       password: ['', Validators.required],
@@ -25,7 +34,10 @@ export class LoginComponent {
     const { enumber, password } = this.form.value;
     this.auth.login(+enumber, password).subscribe({
       next: () => {
-        this.auth.getCurrentUser(true).subscribe(() => this.router.navigate(['/']));
+        this.auth.getCurrentUser(true).subscribe(() => {
+          const next = this.route.snapshot.queryParamMap.get('next');
+          this.router.navigateByUrl(next && next.startsWith('/') ? next : '/');
+        });
       },
       error: () => (this.error = 'Invalid employee number or password.'),
     });

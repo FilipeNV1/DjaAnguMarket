@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark dm-navbar">
-  <div class="container-fluid">
+  <div class="container">
     <a class="navbar-brand" routerLink="/"><i class="bi bi-cart-fill me-3" style="color: #8bda4b"></i>DjanGoMarket</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
       <span class="navbar-toggler-icon"></span>
@@ -9,7 +9,14 @@
       <ul class="navbar-nav me-auto">
         @for (item of menuItems; track item.link) {
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="item.link" routerLinkActive="active">{{ item.label }}</a>
+            <a
+              class="nav-link"
+              [routerLink]="user ? item.link : '/login'"
+              [queryParams]="user ? null : { next: item.link }"
+              routerLinkActive="active"
+            >
+              {{ item.label }}
+            </a>
           </li>
         }
       </ul>
