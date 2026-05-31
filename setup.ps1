@@ -1,4 +1,3 @@
-# DjanGoMarket TP2 — one-time setup (Windows PowerShell)
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
 

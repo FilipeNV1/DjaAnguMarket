@@ -1,6 +1,6 @@
-# DjanGoMarket - Supermarket Management System
+# DjanGoMarket — Supermarket Management System
 
-## TP2 — Angular + Django REST Framework (current)
+## TP2 — Angular + Django REST Framework
 
 This repository is a **monorepo** for Practical Work 2:
 
@@ -9,17 +9,19 @@ This repository is a **monorepo** for Practical Work 2:
 | `django/` | Backend API (DRF) + legacy TP1 HTML views |
 | `angular/` | Angular SPA (main UI for TP2) |
 
-### Quick start (development)
+---
+
+## Quick Start (Development)
 
 **Backend** (terminal 1):
 ```bash
 cd django
 pip install -r requirements.txt
-cp .env.example .env          # or use .env at repo root
-python manage.py migrate
-python setup_groups.py
-python populate_db.py
-python manage.py runserver
+./make-env.sh          # generates .env with SECRET_KEY
+./migrate.sh           # wipes migrations, recreates, applies
+python3 setup_groups.py
+python3 populate_db.py  # optional sample data
+python3 manage.py runserver
 ```
 
 **Frontend** (terminal 2):
@@ -33,11 +35,46 @@ npm start
 - API: http://localhost:8000/api/  
 - Login: employee `1000`, password `password123`
 
-Windows: double-click **`run-dev.cmd`** (opens 2 terminals — no PowerShell policy needed)
+**Windows**: double-click `run-dev.cmd` (opens 2 terminals) or `run-dev.ps1`. First-time setup: run `setup.cmd` or `setup.ps1`.
 
-First-time setup: double-click **`setup.cmd`** or run `setup.ps1`
+---
 
-More: `plan.md`, `docs/RELATORIO_TP2.md`, `docs/DEPLOY.md`
+## Architecture
+
+```
+[Browser]
+    |
+    v
+[Angular SPA :4200]  ── HTTP/JSON + Bearer token ──>  [Django + DRF :8000]
+                                                             |
+                                                             v
+                                                         [SQLite]
+```
+
+The browser receives no Django-rendered HTML for the main UI. Angular consumes REST endpoints at `/api/`.
+
+---
+
+## API Endpoints
+
+Base: `http://localhost:8000/api/` (dev)
+
+| Method | URL | Description |
+|--------|-----|-------------|
+| POST | `/api/token/` | Login `{enumber, password}` → JWT |
+| POST | `/api/token/refresh/` | Refresh access token |
+| GET | `/api/me/` | Current user profile + group + supermarket |
+| * | `/api/supermarkets/` | CRUD |
+| * | `/api/sections/` | CRUD |
+| * | `/api/employees/` | CRUD |
+| * | `/api/products/` | CRUD |
+| * | `/api/warehouses/` | CRUD |
+| * | `/api/distributors/` | CRUD |
+| * | `/api/clients/` | CRUD |
+| * | `/api/purchases/` | CRUD (items nested on read) |
+| * | `/api/orders/` | CRUD (items nested on read) |
+
+All routes except `/api/token/` require: `Authorization: Bearer <access_token>`.
 
 ---
 
@@ -54,7 +91,7 @@ Our application serves as a hub for managing supermarket operations including:
 
 ---
 
-## Main Features of our App
+## Main Features
 
 ### 1. Data Model & Database Management
 - Relational database with 11 interconnected models
@@ -93,7 +130,7 @@ Our application serves as a hub for managing supermarket operations including:
 ### 4. User Views & Templates
 - **List Views**: Display all instances of each entity with search bar filtering
   - Supermarket, Section, Employee, Product, Warehouse, Distributor, Client, Purchase, Order
-  - Role-based filtering (more details below)
+  - Role-based filtering
 - **Create Views**: Form-based creation with permission decorators
   - All entities use generic form template (`generic_form.html`)
   - Automatic permission validation based on user group
@@ -109,8 +146,8 @@ Our application serves as a hub for managing supermarket operations including:
   - Manager - Supermarket-level management
   - Cashier - Transaction and sales operations
   - Employee - View-only access for assigned supermarket
-- Permission-based view restrictions using `@permission_required` decorators
-- Employee login using dynamic username/password (username = employee number, password = 'password123')
+- Permission-based view restrictions
+- Employee login using dynamic username/password (username = employee number, password = `password123`)
 
 ---
 
@@ -119,73 +156,42 @@ Our application serves as a hub for managing supermarket operations including:
 ### Deployed Application
 - **Link**: djangomarket.pythonanywhere.com
 
-### User Authentication Information
+### User Roles & Permissions
 
-#### User Roles & Permissions
+Our system uses Django's group-based permission system to control user access.
 
-Our system uses Django's group-based permission system to control user access. <br> 
-Here's a breakdown of each role:
+##### CEO (Admin)
+- Full system access and control
+- View all data across all supermarkets; full CRUD on all entities
+- `is_staff=True`, can access admin panel
+- **Data Scope:** Global — all supermarkets and data
 
-##### 1. CEO (Admin)
-- **Full system access and control**
-- Permissions:
-  - View all data across all supermarkets
-  - Create, edit, delete supermarkets
-  - Create, edit, delete sections globally
-  - Manage all employees across all supermarkets
-  - Create, edit, delete products
-  - Manage all warehouses
-  - Create, edit, delete distributors
-  - Manage all clients
-  - View and manage all purchases
-  - View and manage all orders
-- **Access Level:** `is_staff=True`, can access admin panel
-- **Data Scope:** Global - all supermarkets and data
-
-##### 2. Manager
-- **Supermarket-level management**
-- Permissions:
-  - View supermarket assigned to them
-  - Create and manage employees within their supermarket
-  - View and manage employees
-  - Create, edit, delete warehouse records for their supermarket
-  - Create and manage purchases
-  - Create and manage orders
-  - View products and sections (company-wide)
-- **Access Level:** Regular user, no admin panel access
+##### Manager
+- Supermarket-level management
+- Full CRUD on employees, warehouses, purchases, orders within their supermarket
+- Read-only on products, sections, distributors
 - **Data Scope:** Limited to their assigned supermarket
 
-##### 3. Cashier
-- **Sales and transaction operations**
-- Permissions:
-  - Create purchases (point of sale transactions)
-  - View purchase history
-  - View product and pricing information
-  - View orders
-- **Access Level:** Regular user, limited view access
+##### Cashier
+- Create purchases (point of sale transactions)
+- View purchase history, products, orders
 - **Data Scope:** Transaction-related data only
 
-##### 4. Employee
-- **View-only access**
-- Permissions:
-  - View-only access to company data
-  - Cannot create, edit, or delete any records
-  - Can view products, employees, warehouses, etc. in read-only mode
-- **Access Level:** Regular user, no modification rights
+##### Employee
+- View-only access to company data
+- Cannot create, edit, or delete any records
 - **Data Scope:** Limited to their supermarket (view-only)
 
-#### Demo Accounts
+### Demo Accounts
 
-All employees have accounts created. The following are example accounts for each role:
+| Role | Username (enumber) | Password |
+|------|-------------------|----------|
+| CEO (Admin) | `1000` | `password123` |
+| Manager | `1001` | `password123` |
+| Cashier | `1002` | `password123` |
+| Employee | `1005` | `password123` |
 
-| Role | Username | Password | ID |
-|------|----------|----------|-----|
-| CEO (Admin) | `1000` | `password123` | 1000 |
-| Manager | `1001` | `password123` | 1001 |
-| Cashier | `1002` | `password123` | 1002 |
-| Employee | `1005` | `password123` | 1005 |
-
-**Note**: Any other employee ID (e.g., 1003) with password `password123` will also work. You can create additional employees through the system and an account will be automatically generated for them with the same password.
+Any other employee ID (e.g., 1003) with password `password123` will also work.
 
 ---
 
@@ -193,84 +199,140 @@ All employees have accounts created. The following are example accounts for each
 
 ### Prerequisites
 - Python 3.8+
+- Node.js 18+
 - Virtual Environment (venv)
 - Git
 
 ### Installation Steps
 
-1. **Clone/Navigate to the project:**
+1. **Clone the project:**
 ```bash
 git clone https://github.com/samuelvinhas/DjanGoMarket.git
 cd DjanGoMarket
+git checkout angular
 ```
 
-2. **Create and activate virtual environment:**
+2. **Backend setup:**
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-3. **Install dependencies:**
-```bash
+cd django
+python3 -m venv ../venv && source ../venv/bin/activate
 pip install -r requirements.txt
-```
-
-4. **Setup Environment Variables:**
-```bash
-chmod +x make-env.sh
 ./make-env.sh
-```
-This script generates a random Django `SECRET_KEY` and creates a `.env` file with required environment variables.
-
-5. **Apply Database Migrations:**
-```bash
-chmod +x migrate.sh
 ./migrate.sh
-```
-
-5. **Configure Groups:**
-```bash
 python3 setup_groups.py
-```
-
-6. **Populate Database with Data (Optional):**
-```bash
-python3 populate_db.py
-```
-
-7. **Run Development Server:**
-```bash
+python3 populate_db.py   # optional
 python3 manage.py runserver
 ```
-- Access: http://localhost:8000/
-- Admin Panel: http://localhost:8000/admin/
-- Supermarket Management: http://localhost:8000/supermarkets/
-- Employee Management: http://localhost:8000/employees/
-- Product Management: http://localhost:8000/products/
-- Warehouse Management: http://localhost:8000/warehouses/
-- Purchase Management: http://localhost:8000/purchases/
-- Orders Management: http://localhost:8000/orders/
-- Section Management: http://localhost:8000/sections/
-- Distributor Management: http://localhost:8000/distributors/
-- Client Management: http://localhost:8000/clients/
 
-**Attention**: More urls are available, for example http://localhost:8000/supermarkets/1/, every "item" has a detail page, so you can access http://localhost:8000/supermarkets/2/ and so on, the same applies to employees, products, warehouses, purchases, orders, sections, distributors and clients.
+3. **Frontend setup (new terminal):**
+```bash
+cd angular
+npm install
+npm start
+```
+
+- Angular: http://localhost:4200
+- Admin Panel: http://localhost:8000/admin/
+- Legacy HTML views: http://localhost:8000/supermarkets/, /employees/, /products/, etc.
+
+---
+
+## Deploy
+
+### Backend — PythonAnywhere
+
+```bash
+# On PythonAnywhere Bash console
+git clone https://github.com/samuelvinhas/DjanGoMarket.git
+cd DjanGoMarket && git checkout angular
+mkvirtualenv --python=/usr/bin/python3.10 djangomarket
+pip install -r django/requirements.txt
+```
+
+Create `django/.env`:
+```env
+SECRET_KEY=<strong-secret-key>
+DEBUG=False
+ALLOWED_HOSTS=YOURUSER.pythonanywhere.com
+CORS_ALLOWED_ORIGINS=https://YOUR-APP.herokuapp.com,http://localhost:4200
+```
+
+```bash
+cd django
+python manage.py migrate
+python setup_groups.py
+python populate_db.py
+python manage.py collectstatic --noinput
+```
+
+**WSGI configuration file** (PythonAnywhere Web tab):
+```python
+import os, sys
+
+path = '/home/YOURUSER/DjanGoMarket/django'
+if path not in sys.path:
+    sys.path.insert(0, path)
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DjanGoMarket.settings')
+
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
+```
+
+**Static files** (Web tab): URL `/static/` → `/home/YOURUSER/DjanGoMarket/django/staticfiles`
+
+### Frontend — Heroku
+
+Update `angular/src/environments/environment.prod.ts`:
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'https://YOURUSER.pythonanywhere.com/api',
+};
+```
+
+```bash
+cd angular
+heroku login
+heroku create djangomarket-frontend
+git subtree push --prefix angular heroku main
+```
+
+After Heroku deploy, add the Heroku URL to `CORS_ALLOWED_ORIGINS` in the PythonAnywhere `.env` and reload the web app.
+
+### Recommended deploy order
+1. Deploy API to PythonAnywhere
+2. Test `/api/token/` with Postman
+3. Update `environment.prod.ts` with API URL
+4. Deploy Angular to Heroku
+5. Add Heroku URL to CORS in Django
+
+### Common issues
+
+| Problem | Solution |
+|---------|---------|
+| CORS error in browser | Add exact Heroku URL to `CORS_ALLOWED_ORIGINS` |
+| 401 on all routes | Get token from `/api/token/` and send `Authorization: Bearer ...` header |
+| Angular 404 on page refresh | `static.json` with `"/**": "index.html"` |
+| `SECRET_KEY` missing | Create `django/.env` or set env vars on PythonAnywhere |
+| WSGI import error | Verify `sys.path` points to `django/` folder |
 
 ---
 
 ## Conclusions
 
 #### What Went Well
-The Django framework made a lot of things easier than expected. The ORM let us focus on modeling the real-world relationships between entities without worrying too much about raw SQL. 
-Setting up role-based access with Django Groups also turned out to be simpler than anticipated, and it gave the system a realistic feel - different users actually see and can do different things depending on their role.
+The Django framework made a lot of things easier than expected. The ORM let us focus on modeling the real-world relationships between entities without worrying too much about raw SQL. Setting up role-based access with Django Groups also turned out to be simpler than anticipated, and it gave the system a realistic feel — different users actually see and can do different things depending on their role.
+
+The Angular + DRF split allowed us to reuse all Django models and business logic from TP1 without rewriting anything. JWT authentication integrates naturally with the `Employee` model.
 
 #### Limitations
-The biggest limitation is the default password setup for employees. Is obviously not something you'd ship in a real product but as this was not the main focus of the project, we went with a simple approach.
+The biggest limitation is the default password setup for employees — obviously not something you'd ship in a real product, but as this was not the main focus of the project, we went with a simple approach.
 
 #### What We'd Improve
-Given more time, the most valuable addition would probably be adding the change password functionality for employees. Besides that, if the system had lots of sections and products, the product listing pages could get unwieldy, so implementing better filtering and search capabilities would be a priority.
+Given more time, the most valuable addition would be password change functionality for employees. Better server-side pagination for large lists and automated E2E tests (Cypress/Playwright) would also be priorities.
 
 #### Final Thoughts
-Overall, DjanGoMarket does what it set out to do. Making this project was a great experience and we believed that the final work was successful. Building a full supermarket management system from scratch using Django wasn't always straightforward, but the end result made us proud of what we accomplished.
+Overall, DjanGoMarket does what it set out to do. Building a full supermarket management system and then converting it to a proper n-tier architecture was a great learning experience.
 
 ---
