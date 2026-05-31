@@ -1,3 +1,4 @@
+from urllib.parse import unquote
 from rest_framework import viewsets, generics, filters
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .permissions import DjangoModelPermissionsWithView as DjangoModelPermissions
@@ -103,10 +104,15 @@ class DistributorViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
     queryset = Distributor.objects.all()
     lookup_field = 'email'
+    lookup_value_regex = r'[^/]+'
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'email', 'contact']
     ordering_fields = ['name', 'email']
     ordering = ['name']
+
+    def get_object(self):
+        self.kwargs['email'] = unquote(self.kwargs['email'])
+        return super().get_object()
 
 class ClientViewSet(viewsets.ModelViewSet):
     serializer_class = ClientSerializer
