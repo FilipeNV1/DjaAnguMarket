@@ -1,39 +1,54 @@
 <div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Warehouses</h2>
-    @if (canWrite) { <a routerLink="/warehouses/new" class="btn btn-dark">+ Add</a> }
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h2 class="fw-bold mb-0 text-dark">
+      <i class="bi bi-building text-muted me-2" style="font-size: 1.5rem"></i>Warehouses
+    </h2>
+    @if (canWrite) {
+      <a routerLink="/warehouses/new" class="btn btn-add">
+        <i class="bi bi-plus-lg me-2"></i>Add
+      </a>
+    }
   </div>
-  @if (loading) { <p class="text-muted">Loading warehouses...</p> }
   @if (error) {
     <div class="alert alert-warning">{{ error }} <button type="button" class="btn btn-sm btn-outline-dark ms-2" (click)="load()">Retry</button></div>
   }
   <input class="form-control mb-3" placeholder="Search..." [(ngModel)]="search" (input)="applyFilter()" />
-  <div class="table-responsive rounded-3 border shadow-sm">
-  <table class="table table-hover align-middle mb-0">
-    <thead class="table-dark">
-      <tr><th>#</th><th>Supermarket</th><th>Area (m²)</th><th>Products</th><th>Actions</th></tr>
-    </thead>
-    <tbody>
-      @for (w of filtered; track w.wnumber) {
-        <tr class="clickable-row" [routerLink]="['/warehouses', w.wnumber]">
-          <td>{{ w.wnumber }}</td>
-          <td>{{ w.supermarket_location ?? w.supermarket }}</td>
-          <td>{{ w.area }}</td>
-          <td>{{ w.stock?.length ?? 0 }}</td>
-          <td (click)="$event.stopPropagation()">
-            @if (canWrite) {
-              <a [routerLink]="['/warehouses', w.wnumber, 'edit']" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
-              <button class="btn btn-sm btn-outline-danger" (click)="delete(w.wnumber)">Delete</button>
+  <div class="card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr><th>#</th><th>Supermarket</th><th>Area (m²)</th><th>Products</th><th class="text-end pe-4">Actions</th></tr>
+          </thead>
+          <tbody>
+            @for (w of filtered; track w.wnumber) {
+              <tr class="clickable-row" [routerLink]="['/warehouses', w.wnumber]">
+                <td class="text-muted">#{{ w.wnumber }}</td>
+                <td class="fw-semibold text-dark">{{ w.supermarket_location ?? w.supermarket }}</td>
+                <td>{{ w.area }}</td>
+                <td>{{ w.stock?.length ?? 0 }}</td>
+                <td class="text-end pe-4" (click)="$event.stopPropagation()">
+                  @if (canWrite) {
+                    <a [routerLink]="['/warehouses', w.wnumber, 'edit']" class="btn btn-sm btn-edit me-1"><i class="bi bi-pencil"></i></a>
+                    <button class="btn btn-sm btn-delete" (click)="delete(w.wnumber)"><i class="bi bi-trash"></i></button>
+                  }
+                </td>
+              </tr>
             }
-          </td>
-        </tr>
-      }
-      @empty {
-        @if (!loading && !error) {
-          <tr><td colspan="5" class="text-center text-muted">No warehouses found.</td></tr>
-        }
-      }
-    </tbody>
-  </table>
+            @empty {
+              @if (!loading && !error) {
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-5 border-0">
+                    <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
+                    <h5 class="fw-normal">No warehouses found</h5>
+                    <p class="small">There are currently no records available in this section.</p>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

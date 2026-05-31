@@ -1,37 +1,54 @@
 <div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Purchases</h2>
-    @if (canCreate) { <a routerLink="/purchases/new" class="btn btn-dark">+ Add</a> }
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h2 class="fw-bold mb-0 text-dark">
+      <i class="bi bi-receipt text-muted me-2" style="font-size: 1.5rem"></i>Purchases
+    </h2>
+    @if (canCreate) {
+      <a routerLink="/purchases/new" class="btn btn-add">
+        <i class="bi bi-plus-lg me-2"></i>Add
+      </a>
+    }
   </div>
-  @if (loading) { <p class="text-muted">Loading purchases...</p> }
   @if (error) {
     <div class="alert alert-warning">{{ error }} <button type="button" class="btn btn-sm btn-outline-dark ms-2" (click)="load()">Retry</button></div>
   }
   <input class="form-control mb-3" placeholder="Search by date or client..." [(ngModel)]="search" (input)="applyFilter()" />
-  <div class="table-responsive rounded-3 border shadow-sm">
-  <table class="table table-hover align-middle mb-0">
-    <thead class="table-dark"><tr><th>#</th><th>Date</th><th>Client</th><th>Total</th><th>Actions</th></tr></thead>
-    <tbody>
-      @for (p of filtered; track p.purchid) {
-        <tr class="clickable-row" [routerLink]="['/purchases', p.purchid]">
-          <td>{{ p.purchid }}</td>
-          <td>{{ p.date }}</td>
-          <td>{{ p.client_name ?? '-' }}</td>
-          <td>{{ p.calculated_total | number:'1.2-2' }} €</td>
-          <td (click)="$event.stopPropagation()">
-            @if (canManage) {
-              <a [routerLink]="['/purchases', p.purchid, 'edit']" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
-              <button class="btn btn-sm btn-outline-danger" (click)="delete(p.purchid)">Delete</button>
+  <div class="card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr><th>#</th><th>Date</th><th>Client</th><th>Total</th><th class="text-end pe-4">Actions</th></tr>
+          </thead>
+          <tbody>
+            @for (p of filtered; track p.purchid) {
+              <tr class="clickable-row" [routerLink]="['/purchases', p.purchid]">
+                <td class="text-muted">#{{ p.purchid }}</td>
+                <td>{{ p.date }}</td>
+                <td class="fw-semibold text-dark">{{ p.client_name ?? '-' }}</td>
+                <td>{{ p.calculated_total | number:'1.2-2' }} €</td>
+                <td class="text-end pe-4" (click)="$event.stopPropagation()">
+                  @if (canManage) {
+                    <a [routerLink]="['/purchases', p.purchid, 'edit']" class="btn btn-sm btn-edit me-1"><i class="bi bi-pencil"></i></a>
+                    <button class="btn btn-sm btn-delete" (click)="delete(p.purchid)"><i class="bi bi-trash"></i></button>
+                  }
+                </td>
+              </tr>
             }
-          </td>
-        </tr>
-      }
-      @empty {
-        @if (!loading && !error) {
-          <tr><td colspan="5" class="text-center text-muted">No purchases found.</td></tr>
-        }
-      }
-    </tbody>
-  </table>
+            @empty {
+              @if (!loading && !error) {
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-5 border-0">
+                    <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
+                    <h5 class="fw-normal">No purchases found</h5>
+                    <p class="small">There are currently no records available in this section.</p>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

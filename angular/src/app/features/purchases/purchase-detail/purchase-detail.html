@@ -1,37 +1,69 @@
-<div class="container mt-4" style="max-width:640px">
-  <a routerLink="/purchases" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
+<div class="container mt-4">
   @if (item) {
-    <div class="card">
-      <div class="card-header"><h5 class="mb-0">Purchase #{{ item.purchid }}</h5></div>
-      <div class="card-body">
-        <dl class="row">
-          <dt class="col-4">Date</dt><dd class="col-8">{{ item.date }}</dd>
-          <dt class="col-4">Client</dt>
-          <dd class="col-8">
-            @if (item.client) {
-              <a [routerLink]="['/clients', item.client]">{{ item.client_name }}</a>
-            } @else {
-              -
-            }
-          </dd>
-          <dt class="col-4">Total</dt><dd class="col-8">{{ item.calculated_total | number:'1.2-2' }} €</dd>
-        </dl>
-        <h6>Items</h6>
-        <div class="table-responsive rounded-3 border">
-        <table class="table table-sm table-hover align-middle mb-0">
-          <thead class="table-dark"><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead>
-          <tbody>
-            @for (it of item.items; track it.product) {
-              <tr class="clickable-row" [routerLink]="['/products', it.product]">
-                <td>{{ it.product_name }}</td>
-                <td>{{ it.quantity }}</td>
-                <td>{{ it.price_at_purchase | number:'1.2-2' }} €</td>
-                <td>{{ it.quantity * it.price_at_purchase | number:'1.2-2' }} €</td>
-              </tr>
-            }
-            @empty { <tr><td colspan="4" class="text-muted text-center">No items.</td></tr> }
-          </tbody>
-        </table>
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <nav aria-label="breadcrumb" class="mb-1">
+          <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a routerLink="/purchases" class="text-decoration-none">Purchases</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Purchase #{{ item.purchid }}</li>
+          </ol>
+        </nav>
+        <h2 class="fw-bold mb-0 text-dark">
+          <i class="bi bi-receipt text-muted me-2" style="font-size: 1.5rem;"></i>Purchase #{{ item.purchid }}
+        </h2>
+      </div>
+      <a routerLink="/purchases" class="btn btn-outline-secondary rounded-pill px-3 fw-medium">
+        <i class="bi bi-arrow-left me-1"></i>All purchases
+      </a>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <h3 class="h6 text-uppercase text-muted fw-semibold mb-3">Details</h3>
+            <dl class="row mb-0 small">
+              <dt class="col-4 text-muted fw-normal">Date</dt>
+              <dd class="col-8 mb-2 fw-semibold text-dark">{{ item.date }}</dd>
+              <dt class="col-4 text-muted fw-normal">Client</dt>
+              <dd class="col-8 mb-2">
+                @if (item.client) {
+                  <a [routerLink]="['/clients', item.client]">{{ item.client_name }}</a>
+                } @else { - }
+              </dd>
+              <dt class="col-4 text-muted fw-normal">Total</dt>
+              <dd class="col-8 mb-2 fw-semibold text-dark">{{ item.calculated_total | number:'1.2-2' }} €</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card shadow-sm">
+          <div class="card-body p-0">
+            <div class="px-4 pt-4 pb-2">
+              <h3 class="h6 text-uppercase text-muted fw-semibold mb-0">Items</h3>
+              <p class="small text-muted mb-0 mt-1">Products included in this purchase.</p>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+                </thead>
+                <tbody>
+                  @for (it of item.items; track it.product) {
+                    <tr class="clickable-row" [routerLink]="['/products', it.product]">
+                      <td class="fw-semibold text-dark">{{ it.product_name }}</td>
+                      <td>{{ it.quantity }}</td>
+                      <td>{{ it.price_at_purchase | number:'1.2-2' }} €</td>
+                      <td>{{ it.quantity * it.price_at_purchase | number:'1.2-2' }} €</td>
+                    </tr>
+                  }
+                  @empty {
+                    <tr><td colspan="4" class="text-center text-muted py-4 border-0">No items.</td></tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>

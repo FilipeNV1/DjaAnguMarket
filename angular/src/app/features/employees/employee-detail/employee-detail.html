@@ -1,31 +1,55 @@
-<div class="container mt-4" style="max-width:600px">
-  <a routerLink="/employees" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
+<div class="container mt-4">
   @if (item) {
-    <div class="card">
-      <div class="card-header"><h5 class="mb-0">Employee #{{ item.enumber }} - {{ item.name }}</h5></div>
-      <div class="card-body">
-        <dl class="row mb-0">
-          <dt class="col-5">Role</dt><dd class="col-7">{{ item.role }}</dd>
-          @if (item.group) {
-            <dt class="col-5">Group</dt><dd class="col-7"><span class="badge bg-secondary">{{ item.group }}</span></dd>
-          }
-          <dt class="col-5">Salary</dt><dd class="col-7">{{ item.salary | number:'1.2-2' }} €</dd>
-          <dt class="col-5">Age</dt><dd class="col-7">{{ item.age }}</dd>
-          <dt class="col-5">Contact</dt><dd class="col-7">{{ item.contact }}</dd>
-          <dt class="col-5">Sex</dt><dd class="col-7">{{ item.sex }}</dd>
-          <dt class="col-5">Supermarket</dt>
-          <dd class="col-7">
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <nav aria-label="breadcrumb" class="mb-1">
+          <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a routerLink="/employees" class="text-decoration-none">Employees</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ item.name }}</li>
+          </ol>
+        </nav>
+        <h2 class="fw-bold mb-0 text-dark">
+          <i class="bi bi-people text-muted me-2" style="font-size: 1.5rem;"></i>{{ item.name }}
+        </h2>
+      </div>
+      <a routerLink="/employees" class="btn btn-outline-secondary rounded-pill px-3 fw-medium">
+        <i class="bi bi-arrow-left me-1"></i>All employees
+      </a>
+    </div>
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h3 class="h6 text-uppercase text-muted fw-semibold mb-3">Details</h3>
+        <dl class="row mb-0 small">
+          <dt class="col-5 text-muted fw-normal">Employee #</dt>
+          <dd class="col-7 mb-2 fw-semibold text-dark">{{ item.enumber }}</dd>
+          <dt class="col-5 text-muted fw-normal">Role</dt>
+          <dd class="col-7 mb-2">{{ item.role }}</dd>
+          <dt class="col-5 text-muted fw-normal">Group</dt>
+          <dd class="col-7 mb-2">
+            @if (item.group) {
+              <span class="badge bg-secondary">{{ item.group }}</span>
+            } @else { - }
+          </dd>
+          <dt class="col-5 text-muted fw-normal">Salary</dt>
+          <dd class="col-7 mb-2">{{ item.salary | number:'1.2-2' }} €</dd>
+          <dt class="col-5 text-muted fw-normal">Age</dt>
+          <dd class="col-7 mb-2">{{ item.age }}</dd>
+          <dt class="col-5 text-muted fw-normal">Contact</dt>
+          <dd class="col-7 mb-2">{{ item.contact }}</dd>
+          <dt class="col-5 text-muted fw-normal">Sex</dt>
+          <dd class="col-7 mb-2">{{ item.sex }}</dd>
+          <dt class="col-5 text-muted fw-normal">Supermarket</dt>
+          <dd class="col-7 mb-2">
             <a [routerLink]="['/supermarkets', item.supermarket]">{{ item.supermarket_location ?? item.supermarket }}</a>
           </dd>
-          <dt class="col-5">Supervisor</dt>
-          <dd class="col-7">
+          <dt class="col-5 text-muted fw-normal">Supervisor</dt>
+          <dd class="col-7 mb-2">
             @if (item.supervisor) {
-              <a [routerLink]="['/employees', item.supervisor]">{{ item.supervisor }}</a>
-            } @else {
-              -
-            }
+              <a [routerLink]="['/employees', item.supervisor]">#{{ item.supervisor }}</a>
+            } @else { - }
           </dd>
-          <dt class="col-5">Active</dt><dd class="col-7">{{ item.is_active ? 'Yes' : 'No' }}</dd>
+          <dt class="col-5 text-muted fw-normal">Active</dt>
+          <dd class="col-7 mb-2">{{ item.is_active ? 'Yes' : 'No' }}</dd>
         </dl>
       </div>
     </div>

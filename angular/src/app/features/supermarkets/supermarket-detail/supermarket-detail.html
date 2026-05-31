@@ -1,18 +1,37 @@
-<div class="container mt-4" style="max-width:600px">
-  <a routerLink="/supermarkets" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
+<div class="container mt-4">
   @if (item) {
-    <div class="card">
-      <div class="card-header"><h5 class="mb-0">Supermarket #{{ item.id }}</h5></div>
-      <div class="card-body">
-        <dl class="row mb-0">
-          <dt class="col-4">Location</dt><dd class="col-8">{{ item.location }}</dd>
-          <dt class="col-4">Opening</dt><dd class="col-8">{{ item.opening_time }}</dd>
-          <dt class="col-4">Close</dt><dd class="col-8">{{ item.close_time }}</dd>
-          <dt class="col-4">Sections</dt>
-          <dd class="col-8">
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <nav aria-label="breadcrumb" class="mb-1">
+          <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a routerLink="/supermarkets" class="text-decoration-none">Supermarkets</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ item.location }}</li>
+          </ol>
+        </nav>
+        <h2 class="fw-bold mb-0 text-dark">
+          <i class="bi bi-buildings text-muted me-2" style="font-size: 1.5rem;"></i>{{ item.location }}
+        </h2>
+      </div>
+      <a routerLink="/supermarkets" class="btn btn-outline-secondary rounded-pill px-3 fw-medium">
+        <i class="bi bi-arrow-left me-1"></i>All supermarkets
+      </a>
+    </div>
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h3 class="h6 text-uppercase text-muted fw-semibold mb-3">Details</h3>
+        <dl class="row mb-0 small">
+          <dt class="col-4 text-muted fw-normal">Location</dt>
+          <dd class="col-8 mb-2 fw-semibold text-dark">{{ item.location }}</dd>
+          <dt class="col-4 text-muted fw-normal">Opening</dt>
+          <dd class="col-8 mb-2">{{ item.opening_time }}</dd>
+          <dt class="col-4 text-muted fw-normal">Close</dt>
+          <dd class="col-8 mb-2">{{ item.close_time }}</dd>
+          <dt class="col-4 text-muted fw-normal">Sections</dt>
+          <dd class="col-8 mb-2 d-flex flex-wrap gap-1">
             @for (s of item.sections; track s.sname) {
-              <a [routerLink]="['/sections', s.sname]" class="badge bg-secondary me-1 text-decoration-none">{{ s.sname }}</a>
+              <a [routerLink]="['/sections', s.sname]" class="badge bg-light text-dark border text-decoration-none">{{ s.sname }}</a>
             }
+            @empty { <span class="text-muted">None</span> }
           </dd>
         </dl>
       </div>

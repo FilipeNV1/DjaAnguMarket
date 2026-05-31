@@ -1,31 +1,64 @@
-<div class="container mt-4" style="max-width:640px">
-  <a routerLink="/warehouses" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back</a>
+<div class="container mt-4">
   @if (item) {
-    <div class="card">
-      <div class="card-header"><h5 class="mb-0">Warehouse #{{ item.wnumber }}</h5></div>
-      <div class="card-body">
-        <dl class="row">
-          <dt class="col-5">Supermarket</dt>
-          <dd class="col-7">
-            <a [routerLink]="['/supermarkets', item.supermarket]">{{ item.supermarket_location ?? item.supermarket }}</a>
-          </dd>
-          <dt class="col-5">Area</dt><dd class="col-7">{{ item.area }} m²</dd>
-        </dl>
-        <h6>Stock</h6>
-        <div class="table-responsive rounded-3 border">
-        <table class="table table-sm table-hover align-middle mb-0">
-          <thead class="table-dark"><tr><th>Product</th><th>Price</th><th>Qty</th></tr></thead>
-          <tbody>
-            @for (s of item.stock; track s.product) {
-              <tr class="clickable-row" [routerLink]="['/products', s.product]">
-                <td>{{ s.product_name }}</td>
-                <td>{{ s.product_price | number:'1.2-2' }} €</td>
-                <td>{{ s.wqty }}</td>
-              </tr>
-            }
-            @empty { <tr><td colspan="3" class="text-muted text-center">No stock entries.</td></tr> }
-          </tbody>
-        </table>
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <nav aria-label="breadcrumb" class="mb-1">
+          <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a routerLink="/warehouses" class="text-decoration-none">Warehouses</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Warehouse #{{ item.wnumber }}</li>
+          </ol>
+        </nav>
+        <h2 class="fw-bold mb-0 text-dark">
+          <i class="bi bi-building text-muted me-2" style="font-size: 1.5rem;"></i>Warehouse #{{ item.wnumber }}
+        </h2>
+      </div>
+      <a routerLink="/warehouses" class="btn btn-outline-secondary rounded-pill px-3 fw-medium">
+        <i class="bi bi-arrow-left me-1"></i>All warehouses
+      </a>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <h3 class="h6 text-uppercase text-muted fw-semibold mb-3">Details</h3>
+            <dl class="row mb-0 small">
+              <dt class="col-5 text-muted fw-normal">Supermarket</dt>
+              <dd class="col-7 mb-2">
+                <a [routerLink]="['/supermarkets', item.supermarket]">{{ item.supermarket_location ?? item.supermarket }}</a>
+              </dd>
+              <dt class="col-5 text-muted fw-normal">Area</dt>
+              <dd class="col-7 mb-2 fw-semibold text-dark">{{ item.area }} m²</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card shadow-sm">
+          <div class="card-body p-0">
+            <div class="px-4 pt-4 pb-2">
+              <h3 class="h6 text-uppercase text-muted fw-semibold mb-0">Stock</h3>
+              <p class="small text-muted mb-0 mt-1">Products stored in this warehouse.</p>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr><th>Product</th><th>Price</th><th>Qty</th></tr>
+                </thead>
+                <tbody>
+                  @for (s of item.stock; track s.product) {
+                    <tr class="clickable-row" [routerLink]="['/products', s.product]">
+                      <td class="fw-semibold text-dark">{{ s.product_name }}</td>
+                      <td>{{ s.product_price | number:'1.2-2' }} €</td>
+                      <td>{{ s.wqty }}</td>
+                    </tr>
+                  }
+                  @empty {
+                    <tr><td colspan="3" class="text-center text-muted py-4 border-0">No stock entries.</td></tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>

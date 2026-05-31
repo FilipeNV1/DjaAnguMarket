@@ -43,16 +43,40 @@ body {
   font-weight: 700;
 }
 
-.btn-brand {
+.btn-brand, .btn-add {
   background-color: #8bda4b;
   border-color: #8bda4b;
   color: #0c3324;
   font-weight: 600;
 }
 
-.btn-brand:hover {
+.btn-brand:hover, .btn-add:hover {
   background-color: #7bc93f;
   border-color: #7bc93f;
+  color: #0c3324;
+}
+
+.btn-edit {
+  background-color: #c6e9a8;
+  color: #0c3324;
+  border: 1px solid #a8e063;
+  font-weight: 500;
+}
+
+.btn-edit:hover {
+  background-color: #b0de8a;
+  color: #0c3324;
+}
+
+.btn-delete {
+  background-color: #8bda4b;
+  color: #0c3324;
+  border: 1px solid #6bb53a;
+  font-weight: 500;
+}
+
+.btn-delete:hover {
+  background-color: #7bc93f;
   color: #0c3324;
 }
 
