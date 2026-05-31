@@ -11,7 +11,7 @@
             @if (item.client) {
               <a [routerLink]="['/clients', item.client]">{{ item.client_name }}</a>
             } @else {
-              —
+              -
             }
           </dd>
           <dt class="col-4">Total</dt><dd class="col-8">{{ item.calculated_total | number:'1.2-2' }} €</dd>

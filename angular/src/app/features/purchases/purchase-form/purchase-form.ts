@@ -29,7 +29,7 @@ export class PurchaseFormComponent implements OnInit {
   readonly modalSearch = signal('');
   readonly selectedSection = signal<string | null>(null);
 
-  // Derived state via computed() — memoized, only recomputes when a dependency changes.
+  // Derived state via computed() - memoized, only recomputes when a dependency changes.
   readonly sectionNames = computed(() =>
     [...new Set(this.products().map(p => p.section ?? p.section_name).filter(Boolean))].sort((a, b) =>
       a.localeCompare(b)
@@ -50,7 +50,7 @@ export class PurchaseFormComponent implements OnInit {
     return this.products().filter(p => (p.section ?? p.section_name) === section);
   });
 
-  // Running total — recomputes automatically when itemRows (or any quantity) changes.
+  // Running total - recomputes automatically when itemRows (or any quantity) changes.
   readonly total = computed(() => this.itemRows().reduce((sum, r) => sum + r.quantity * r.price, 0));
 
   constructor(

@@ -1,6 +1,6 @@
-# DjanGoMarket — Supermarket Management System
+# DjanGoMarket - Supermarket Management System
 
-## TP2 — Angular + Django REST Framework
+## TP2 - Angular + Django REST Framework
 
 This repository is a **monorepo** for Practical Work 2:
 
@@ -164,7 +164,7 @@ Our system uses Django's group-based permission system to control user access.
 - Full system access and control
 - View all data across all supermarkets; full CRUD on all entities
 - `is_staff=True`, can access admin panel
-- **Data Scope:** Global — all supermarkets and data
+- **Data Scope:** Global - all supermarkets and data
 
 ##### Manager
 - Supermarket-level management
@@ -239,7 +239,7 @@ npm start
 
 ## Deploy
 
-### Backend — PythonAnywhere
+### Backend - PythonAnywhere
 
 ```bash
 # On PythonAnywhere Bash console
@@ -281,7 +281,7 @@ application = get_wsgi_application()
 
 **Static files** (Web tab): URL `/static/` → `/home/YOURUSER/DjanGoMarket/django/staticfiles`
 
-### Frontend — Heroku
+### Frontend - Heroku
 
 Update `angular/src/environments/environment.prod.ts`:
 ```typescript
@@ -322,12 +322,12 @@ After Heroku deploy, add the Heroku URL to `CORS_ALLOWED_ORIGINS` in the PythonA
 ## Conclusions
 
 #### What Went Well
-The Django framework made a lot of things easier than expected. The ORM let us focus on modeling the real-world relationships between entities without worrying too much about raw SQL. Setting up role-based access with Django Groups also turned out to be simpler than anticipated, and it gave the system a realistic feel — different users actually see and can do different things depending on their role.
+The Django framework made a lot of things easier than expected. The ORM let us focus on modeling the real-world relationships between entities without worrying too much about raw SQL. Setting up role-based access with Django Groups also turned out to be simpler than anticipated, and it gave the system a realistic feel - different users actually see and can do different things depending on their role.
 
 The Angular + DRF split allowed us to reuse all Django models and business logic from TP1 without rewriting anything. JWT authentication integrates naturally with the `Employee` model.
 
 #### Limitations
-The biggest limitation is the default password setup for employees — obviously not something you'd ship in a real product, but as this was not the main focus of the project, we went with a simple approach.
+The biggest limitation is the default password setup for employees - obviously not something you'd ship in a real product, but as this was not the main focus of the project, we went with a simple approach.
 
 #### What We'd Improve
 Given more time, the most valuable addition would be password change functionality for employees. Better server-side pagination for large lists and automated E2E tests (Cypress/Playwright) would also be priorities.

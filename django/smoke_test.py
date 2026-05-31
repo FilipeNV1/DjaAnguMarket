@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Smoke test for DjanGoMarket API — all roles (run from repo root)."""
+"""Smoke test for DjanGoMarket API - all roles (run from repo root)."""
 import json
 import os
 import sys

@@ -49,7 +49,7 @@
           <div class="col-12">
             <label class="form-label">Supervisor</label>
             <select class="form-select" formControlName="supervisor">
-              <option [value]="null">— None —</option>
+              <option [value]="null">- None -</option>
               @for (e of employees; track e.enumber) { <option [value]="e.enumber">{{ e.name }} (#{{ e.enumber }})</option> }
             </select>
           </div>

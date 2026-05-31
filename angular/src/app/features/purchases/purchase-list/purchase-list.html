@@ -16,7 +16,7 @@
         <tr class="clickable-row" [routerLink]="['/purchases', p.purchid]">
           <td>{{ p.purchid }}</td>
           <td>{{ p.date }}</td>
-          <td>{{ p.client_name ?? '—' }}</td>
+          <td>{{ p.client_name ?? '-' }}</td>
           <td>{{ p.calculated_total | number:'1.2-2' }} €</td>
           <td (click)="$event.stopPropagation()">
             @if (canManage) {

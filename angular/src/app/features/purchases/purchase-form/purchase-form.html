@@ -13,7 +13,7 @@
           <div class="col-6">
             <label class="form-label">Client</label>
             <select class="form-select" formControlName="client">
-              <option [value]="null">— Anonymous —</option>
+              <option [value]="null">- Anonymous -</option>
               @for (c of clients; track c.nif) { <option [value]="c.nif">{{ c.name }}</option> }
             </select>
           </div>
