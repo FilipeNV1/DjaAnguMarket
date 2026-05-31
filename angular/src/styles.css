@@ -17,9 +17,26 @@ body {
   color: rgba(255, 255, 255, 0.85) !important;
 }
 
+.dm-navbar .nav-link:hover {
+  color: #fff !important;
+}
+
 .dm-navbar .nav-link.active {
   color: #8bda4b !important;
   font-weight: 600;
+  position: relative;
+}
+
+.dm-navbar .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background-color: #8bda4b;
+  border-radius: 2px;
 }
 
 .dm-navbar .navbar-brand {
@@ -92,4 +109,70 @@ body {
 main.container-fluid,
 .container.mt-4 {
   padding-bottom: 3rem;
+}
+
+/* Home page cards */
+.hover-card {
+  transition: all 0.2s ease-in-out;
+  border: 1px solid rgba(0,0,0,0.05) !important;
+}
+
+.hover-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+
+/* Form inputs */
+.card-body input[type="text"],
+.card-body input[type="number"],
+.card-body input[type="email"],
+.card-body input[type="date"],
+.card-body input[type="time"],
+.card-body input[type="datetime-local"],
+.card-body input[type="password"],
+.card-body select,
+.card-body textarea {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: all 0.2s;
+  box-shadow: none !important;
+}
+
+.card-body input:focus,
+.card-body select:focus,
+.card-body textarea:focus {
+  border-color: #8bda4b;
+  box-shadow: 0 0 0 3px rgba(139,218,75,0.2) !important;
+  outline: 0;
+}
+
+.card-body input[type="checkbox"] {
+  width: 1.5em;
+  height: 1.5em;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25em;
+  appearance: none;
+}
+
+.card-body input[type="checkbox"]:checked {
+  background-color: #8bda4b;
+  border-color: #8bda4b;
+}
+
+.card-body input:disabled,
+.card-body select:disabled,
+.card-body textarea:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  border-color: #dee2e6;
+  cursor: not-allowed;
+  opacity: 0.85;
 }

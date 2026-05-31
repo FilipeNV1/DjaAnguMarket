@@ -12,9 +12,14 @@ import { NavItem, navItemsForGroup } from '../../core/utils/role-access';
   templateUrl: './home.html',
 })
 export class HomeComponent implements OnInit {
+
   user: Me | null = null;
   menuItems: NavItem[] = [];
   userSubtitle = userSubtitle;
+
+  cardBorderColors = ['#0c3324', '#60a249', '#8bda4b'];
+  cardBgColors     = ['rgba(12,51,36,0.08)', 'rgba(96,162,73,0.10)', 'rgba(139,218,75,0.15)'];
+  cardIconColors   = ['#0c3324', '#60a249', '#60a249'];
 
   constructor(private auth: AuthService) {}
 

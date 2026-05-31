@@ -1,19 +1,41 @@
-<div class="container mt-4">
-  @if (user) {
-    <div class="mb-4">
-      <h2>Welcome, {{ user.name }}</h2>
-      <p class="text-muted">{{ userSubtitle(user) }}</p>
-    </div>
-  }
-  <div class="row g-3">
-    @for (item of menuItems; track item.link) {
-      <div class="col-6 col-md-4 col-lg-3">
-        <a [routerLink]="item.link" class="card text-decoration-none text-dark h-100 home-card">
-          <div class="card-body text-center py-4">
-            <h5 class="card-title mb-0">{{ item.label }}</h5>
-          </div>
-        </a>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 text-center mt-5">
+
+      <div class="mb-4">
+        <i class="bi bi-shop" style="color: #60a249; font-size: 4.5rem;"></i>
       </div>
-    }
+
+      <h1 class="display-4 fw-bolder mb-3" style="letter-spacing: -1px; color: #0c3324;">Welcome to DjanGoMarket</h1>
+
+      @if (user) {
+        <p class="lead text-muted mb-5" style="max-width: 600px; margin: 0 auto;">
+          {{ userSubtitle(user) }} Select a module below or use the top menu to navigate.
+        </p>
+      }
+
+      <div class="row g-4 mt-2">
+        @for (item of menuItems; track item.link; let i = $index) {
+          <div class="col-md-4">
+            <a [routerLink]="item.link" class="text-decoration-none">
+              <div class="card h-100 text-center p-4 hover-card"
+                   [style.border-top]="'4px solid ' + cardBorderColors[i % 3]">
+                <div class="card-body">
+                  <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                       [style.background-color]="cardBgColors[i % 3]"
+                       style="width: 80px; height: 80px;">
+                    <i [class]="'bi ' + item.icon + ' fs-1'"
+                       [style.color]="cardIconColors[i % 3]"></i>
+                  </div>
+                  <h4 class="fw-bold" style="color: #0c3324;">{{ item.label }}</h4>
+                  <p class="text-muted small mb-0">{{ item.description }}</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        }
+      </div>
+
+    </div>
   </div>
 </div>
