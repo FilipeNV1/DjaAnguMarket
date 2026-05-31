@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './shared/components/navbar/navbar';
 import { ToastComponent } from './shared/components/toast/toast';
 
@@ -9,4 +9,6 @@ import { ToastComponent } from './shared/components/toast/toast';
   imports: [RouterOutlet, NavbarComponent, ToastComponent],
   templateUrl: './app.html',
 })
-export class App {}
+export class App {
+  constructor(public router: Router) {}
+}
