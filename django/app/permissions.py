@@ -1,9 +1,6 @@
 from rest_framework.permissions import DjangoModelPermissions
 
-
 class DjangoModelPermissionsWithView(DjangoModelPermissions):
-    """Require view_* permission for GET/HEAD/OPTIONS (DRF default omits these)."""
-
     perms_map = {
         'GET': ['%(app_label)s.view_%(model_name)s'],
         'OPTIONS': ['%(app_label)s.view_%(model_name)s'],
