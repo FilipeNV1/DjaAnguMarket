@@ -94,7 +94,7 @@ CREATE TABLE "app_employee_user_permissions" ("id" integer NOT NULL PRIMARY KEY 
 --
 -- Create model Warehouse
 --
-CREATE TABLE "app_warehouse" ("wnumber" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "area" varchar(64) NOT NULL, "supermarket_id" integer NOT NULL REFERENCES "app_supermarket" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE "app_warehouse" ("wnumber" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "area" integer unsigned NOT NULL CHECK ("area" >= 0), "supermarket_id" integer NOT NULL REFERENCES "app_supermarket" ("id") DEFERRABLE INITIALLY DEFERRED);
 --
 -- Create model WareHStock
 --
@@ -102,7 +102,7 @@ CREATE TABLE "app_warehstock" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
 --
 -- Add field products to warehouse
 --
-CREATE TABLE "new__app_warehouse" ("wnumber" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "area" varchar(64) NOT NULL, "supermarket_id" integer NOT NULL REFERENCES "app_supermarket" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE "new__app_warehouse" ("wnumber" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "area" integer unsigned NOT NULL CHECK ("area" >= 0), "supermarket_id" integer NOT NULL REFERENCES "app_supermarket" ("id") DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO "new__app_warehouse" ("wnumber", "area", "supermarket_id") SELECT "wnumber", "area", "supermarket_id" FROM "app_warehouse";
 DROP TABLE "app_warehouse";
 ALTER TABLE "new__app_warehouse" RENAME TO "app_warehouse";
