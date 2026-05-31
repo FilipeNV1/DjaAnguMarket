@@ -9,8 +9,11 @@
       <h1 class="display-4 fw-bolder mb-3" style="letter-spacing: -1px; color: #0c3324;">Welcome to DjanGoMarket</h1>
 
       @if (user) {
-        <p class="lead text-muted mb-5" style="max-width: 600px; margin: 0 auto;">
-          {{ userSubtitle(user) }} Select a module below or use the top menu to navigate.
+        <p class="lead text-muted mb-2" style="max-width: 600px; margin: 0 auto;">
+          {{ userSubtitle(user) }}
+        </p>
+        <p class="text-muted mb-5" style="max-width: 600px; margin: 0 auto;">
+          Select a module below or use the top menu to navigate.
         </p>
       }
 
