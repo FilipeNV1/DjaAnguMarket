@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Product, Me } from '../../../core/models';
 import { loadList } from '../../../core/utils/list-load';
 
@@ -20,8 +21,9 @@ export class ProductListComponent implements OnInit {
   search = '';
   loading = true;
   error = '';
+  pendingDelete: number | null = null;
 
-  constructor(private api: ApiService, private auth: AuthService) {}
+  constructor(private api: ApiService, private auth: AuthService, private toast: ToastService) {}
 
   ngOnInit(): void {
     this.load();
@@ -45,11 +47,18 @@ export class ProductListComponent implements OnInit {
 
   get canWrite(): boolean { return this.user?.group === 'CEO'; }
 
-  delete(id: number): void {
-    if (!confirm('Delete this product?')) return;
-    this.api.deleteProduct(id).subscribe(() => {
-      this.items = this.items.filter(i => i.prodid !== id);
-      this.applyFilter();
+  requestDelete(id: number): void { this.pendingDelete = id; }
+  cancelDelete(): void { this.pendingDelete = null; }
+
+  confirmDelete(id: number): void {
+    this.api.deleteProduct(id).subscribe({
+      next: () => {
+        this.items = this.items.filter(i => i.prodid !== id);
+        this.applyFilter();
+        this.pendingDelete = null;
+        this.toast.show('Product deleted.');
+      },
+      error: () => { this.toast.show('Failed to delete product.', 'error'); this.pendingDelete = null; },
     });
   }
 }

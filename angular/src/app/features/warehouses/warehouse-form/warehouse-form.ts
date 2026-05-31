@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Supermarket, Product, Me } from '../../../core/models';
 
 @Component({
@@ -24,7 +25,8 @@ export class WarehouseFormComponent implements OnInit {
     private api: ApiService,
     private auth: AuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toast: ToastService,
   ) {
     this.form = this.fb.group({
       area: [null, [Validators.required, Validators.min(1)]],
@@ -75,7 +77,7 @@ export class WarehouseFormComponent implements OnInit {
       ? this.api.updateWarehouse(this.id!, data)
       : this.api.createWarehouse(data);
     req.subscribe({
-      next: () => this.router.navigate(['/warehouses']),
+      next: () => { this.toast.show(this.isEditing ? 'Warehouse updated.' : 'Warehouse created.'); this.router.navigate(['/warehouses']); },
       error: err => (this.error = JSON.stringify(err.error)),
     });
   }

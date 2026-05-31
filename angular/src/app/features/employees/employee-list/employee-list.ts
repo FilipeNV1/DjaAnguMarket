@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Employee, Me } from '../../../core/models';
 import { loadList } from '../../../core/utils/list-load';
 
@@ -20,8 +21,9 @@ export class EmployeeListComponent implements OnInit {
   search = '';
   loading = true;
   error = '';
+  pendingDelete: number | null = null;
 
-  constructor(private api: ApiService, private auth: AuthService) {}
+  constructor(private api: ApiService, private auth: AuthService, private toast: ToastService) {}
 
   ngOnInit(): void {
     this.load();
@@ -45,11 +47,18 @@ export class EmployeeListComponent implements OnInit {
 
   get canWrite(): boolean { return this.user?.group === 'CEO' || this.user?.group === 'Manager'; }
 
-  delete(enumber: number): void {
-    if (!confirm('Delete this employee?')) return;
-    this.api.deleteEmployee(enumber).subscribe(() => {
-      this.items = this.items.filter(i => i.enumber !== enumber);
-      this.applyFilter();
+  requestDelete(enumber: number): void { this.pendingDelete = enumber; }
+  cancelDelete(): void { this.pendingDelete = null; }
+
+  confirmDelete(enumber: number): void {
+    this.api.deleteEmployee(enumber).subscribe({
+      next: () => {
+        this.items = this.items.filter(i => i.enumber !== enumber);
+        this.applyFilter();
+        this.pendingDelete = null;
+        this.toast.show('Employee deleted.');
+      },
+      error: () => { this.toast.show('Failed to delete employee.', 'error'); this.pendingDelete = null; },
     });
   }
 }

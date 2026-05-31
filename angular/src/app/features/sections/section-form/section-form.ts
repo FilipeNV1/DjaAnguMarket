@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-section-form',
@@ -19,7 +20,8 @@ export class SectionFormComponent implements OnInit {
     private fb: FormBuilder,
     private api: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toast: ToastService,
   ) {
     this.form = this.fb.group({
       sname: ['', Validators.required],
@@ -44,7 +46,7 @@ export class SectionFormComponent implements OnInit {
       ? this.api.updateSection(this.sname!, data)
       : this.api.createSection(data);
     req.subscribe({
-      next: () => this.router.navigate(['/sections']),
+      next: () => { this.toast.show(this.isEditing ? 'Section updated.' : 'Section created.'); this.router.navigate(['/sections']); },
       error: err => (this.error = JSON.stringify(err.error)),
     });
   }

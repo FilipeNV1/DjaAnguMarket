@@ -1,0 +1,11 @@
+@if (toast.toasts.length) {
+  <div class="dm-toast-container">
+    @for (t of toast.toasts; track t.id) {
+      <div class="dm-toast" [class.dm-toast-error]="t.type === 'error'">
+        <i class="bi" [class.bi-check-circle-fill]="t.type === 'success'" [class.bi-x-circle-fill]="t.type === 'error'"></i>
+        <span>{{ t.message }}</span>
+        <button (click)="toast.dismiss(t.id)" aria-label="Dismiss">&times;</button>
+      </div>
+    }
+  </div>
+}

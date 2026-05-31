@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Distributor, Me } from '../../../core/models';
 import { loadList } from '../../../core/utils/list-load';
 
@@ -20,8 +21,9 @@ export class DistributorListComponent implements OnInit {
   search = '';
   loading = true;
   error = '';
+  pendingDelete: string | null = null;
 
-  constructor(private api: ApiService, private auth: AuthService) {}
+  constructor(private api: ApiService, private auth: AuthService, private toast: ToastService) {}
 
   ngOnInit(): void {
     this.load();
@@ -45,11 +47,18 @@ export class DistributorListComponent implements OnInit {
 
   get canWrite(): boolean { return this.user?.group === 'CEO'; }
 
-  delete(email: string): void {
-    if (!confirm(`Delete distributor "${email}"?`)) return;
-    this.api.deleteDistributor(email).subscribe(() => {
-      this.items = this.items.filter(i => i.email !== email);
-      this.applyFilter();
+  requestDelete(email: string): void { this.pendingDelete = email; }
+  cancelDelete(): void { this.pendingDelete = null; }
+
+  confirmDelete(email: string): void {
+    this.api.deleteDistributor(email).subscribe({
+      next: () => {
+        this.items = this.items.filter(i => i.email !== email);
+        this.applyFilter();
+        this.pendingDelete = null;
+        this.toast.show('Distributor deleted.');
+      },
+      error: () => { this.toast.show('Failed to delete distributor.', 'error'); this.pendingDelete = null; },
     });
   }
 }

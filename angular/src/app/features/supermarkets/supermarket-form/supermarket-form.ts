@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Section } from '../../../core/models';
 
 @Component({
@@ -21,7 +22,8 @@ export class SupermarketFormComponent implements OnInit {
     private fb: FormBuilder,
     private api: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toast: ToastService,
   ) {
     this.form = this.fb.group({
       location: ['', Validators.required],
@@ -71,7 +73,7 @@ export class SupermarketFormComponent implements OnInit {
       ? this.api.updateSupermarket(this.id!, data)
       : this.api.createSupermarket(data);
     req.subscribe({
-      next: () => this.router.navigate(['/supermarkets']),
+      next: () => { this.toast.show(this.isEditing ? 'Supermarket updated.' : 'Supermarket created.'); this.router.navigate(['/supermarkets']); },
       error: err => (this.error = JSON.stringify(err.error)),
     });
   }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Section } from '../../../core/models';
 
 @Component({
@@ -21,7 +22,8 @@ export class ProductFormComponent implements OnInit {
     private fb: FormBuilder,
     private api: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toast: ToastService,
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -49,7 +51,7 @@ export class ProductFormComponent implements OnInit {
       ? this.api.updateProduct(this.id!, data)
       : this.api.createProduct(data);
     req.subscribe({
-      next: () => this.router.navigate(['/products']),
+      next: () => { this.toast.show(this.isEditing ? 'Product updated.' : 'Product created.'); this.router.navigate(['/products']); },
       error: err => (this.error = JSON.stringify(err.error)),
     });
   }

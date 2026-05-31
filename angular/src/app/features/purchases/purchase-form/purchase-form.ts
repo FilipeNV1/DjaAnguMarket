@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } 
 import { DecimalPipe } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Supermarket, Client, Product, Me } from '../../../core/models';
 
 interface ItemRow { product: number; quantity: number; name: string; price: number; }
@@ -58,7 +59,8 @@ export class PurchaseFormComponent implements OnInit {
     private api: ApiService,
     private auth: AuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toast: ToastService,
   ) {
     this.form = this.fb.group({
       date: [new Date().toISOString().slice(0, 10), Validators.required],
@@ -147,7 +149,7 @@ export class PurchaseFormComponent implements OnInit {
       ? this.api.updatePurchase(this.id!, data)
       : this.api.createPurchase(data);
     req.subscribe({
-      next: () => this.router.navigate(['/purchases']),
+      next: () => { this.toast.show(this.isEditing ? 'Purchase updated.' : 'Purchase created.'); this.router.navigate(['/purchases']); },
       error: err => (this.error = JSON.stringify(err.error)),
     });
   }

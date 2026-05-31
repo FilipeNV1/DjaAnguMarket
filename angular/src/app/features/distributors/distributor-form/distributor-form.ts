@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-distributor-form',
@@ -19,7 +20,8 @@ export class DistributorFormComponent implements OnInit {
     private fb: FormBuilder,
     private api: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toast: ToastService,
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -45,7 +47,7 @@ export class DistributorFormComponent implements OnInit {
       ? this.api.updateDistributor(this.email!, data)
       : this.api.createDistributor(data);
     req.subscribe({
-      next: () => this.router.navigate(['/distributors']),
+      next: () => { this.toast.show(this.isEditing ? 'Distributor updated.' : 'Distributor created.'); this.router.navigate(['/distributors']); },
       error: err => (this.error = JSON.stringify(err.error)),
     });
   }

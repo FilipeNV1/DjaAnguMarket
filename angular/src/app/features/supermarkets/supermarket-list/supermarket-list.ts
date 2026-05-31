@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Supermarket, Me } from '../../../core/models';
 import { loadList } from '../../../core/utils/list-load';
 
@@ -20,8 +21,9 @@ export class SupermarketListComponent implements OnInit {
   search = '';
   loading = true;
   error = '';
+  pendingDelete: number | null = null;
 
-  constructor(private api: ApiService, private auth: AuthService) {}
+  constructor(private api: ApiService, private auth: AuthService, private toast: ToastService) {}
 
   ngOnInit(): void {
     this.load();
@@ -43,11 +45,18 @@ export class SupermarketListComponent implements OnInit {
 
   get canWrite(): boolean { return this.user?.group === 'CEO' || this.user?.group === 'Manager'; }
 
-  delete(id: number): void {
-    if (!confirm('Delete this supermarket?')) return;
-    this.api.deleteSupermarket(id).subscribe(() => {
-      this.items = this.items.filter(i => i.id !== id);
-      this.applyFilter();
+  requestDelete(id: number): void { this.pendingDelete = id; }
+  cancelDelete(): void { this.pendingDelete = null; }
+
+  confirmDelete(id: number): void {
+    this.api.deleteSupermarket(id).subscribe({
+      next: () => {
+        this.items = this.items.filter(i => i.id !== id);
+        this.applyFilter();
+        this.pendingDelete = null;
+        this.toast.show('Supermarket deleted.');
+      },
+      error: () => { this.toast.show('Failed to delete supermarket.', 'error'); this.pendingDelete = null; },
     });
   }
 }

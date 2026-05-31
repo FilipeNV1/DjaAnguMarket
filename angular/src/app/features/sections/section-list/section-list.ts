@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Section, Me } from '../../../core/models';
 import { loadList } from '../../../core/utils/list-load';
 
@@ -20,8 +21,9 @@ export class SectionListComponent implements OnInit {
   search = '';
   loading = true;
   error = '';
+  pendingDelete: string | null = null;
 
-  constructor(private api: ApiService, private auth: AuthService) {}
+  constructor(private api: ApiService, private auth: AuthService, private toast: ToastService) {}
 
   ngOnInit(): void {
     this.load();
@@ -45,11 +47,18 @@ export class SectionListComponent implements OnInit {
 
   get canWrite(): boolean { return this.user?.group === 'CEO'; }
 
-  delete(sname: string): void {
-    if (!confirm(`Delete section "${sname}"?`)) return;
-    this.api.deleteSection(sname).subscribe(() => {
-      this.items = this.items.filter(i => i.sname !== sname);
-      this.applyFilter();
+  requestDelete(sname: string): void { this.pendingDelete = sname; }
+  cancelDelete(): void { this.pendingDelete = null; }
+
+  confirmDelete(sname: string): void {
+    this.api.deleteSection(sname).subscribe({
+      next: () => {
+        this.items = this.items.filter(i => i.sname !== sname);
+        this.applyFilter();
+        this.pendingDelete = null;
+        this.toast.show('Section deleted.');
+      },
+      error: () => { this.toast.show('Failed to delete section.', 'error'); this.pendingDelete = null; },
     });
   }
 }

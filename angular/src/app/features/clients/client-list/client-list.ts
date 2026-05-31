@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Client, Me } from '../../../core/models';
 import { loadList } from '../../../core/utils/list-load';
 
@@ -20,8 +21,9 @@ export class ClientListComponent implements OnInit {
   search = '';
   loading = true;
   error = '';
+  pendingDelete: number | null = null;
 
-  constructor(private api: ApiService, private auth: AuthService) {}
+  constructor(private api: ApiService, private auth: AuthService, private toast: ToastService) {}
 
   ngOnInit(): void {
     this.load();
@@ -45,11 +47,18 @@ export class ClientListComponent implements OnInit {
 
   get canWrite(): boolean { return this.user?.group === 'CEO' || this.user?.group === 'Manager'; }
 
-  delete(nif: number): void {
-    if (!confirm('Delete this client?')) return;
-    this.api.deleteClient(nif).subscribe(() => {
-      this.items = this.items.filter(i => i.nif !== nif);
-      this.applyFilter();
+  requestDelete(nif: number): void { this.pendingDelete = nif; }
+  cancelDelete(): void { this.pendingDelete = null; }
+
+  confirmDelete(nif: number): void {
+    this.api.deleteClient(nif).subscribe({
+      next: () => {
+        this.items = this.items.filter(i => i.nif !== nif);
+        this.applyFilter();
+        this.pendingDelete = null;
+        this.toast.show('Client deleted.');
+      },
+      error: () => { this.toast.show('Failed to delete client.', 'error'); this.pendingDelete = null; },
     });
   }
 }

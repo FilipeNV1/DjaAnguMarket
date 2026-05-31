@@ -29,8 +29,14 @@
                 <td>{{ o.calculated_total | number:'1.2-2' }} €</td>
                 <td class="text-end pe-4" (click)="$event.stopPropagation()">
                   @if (canWrite) {
-                    <a [routerLink]="['/orders', o.orderid, 'edit']" class="btn btn-sm btn-edit me-1"><i class="bi bi-pencil"></i></a>
-                    <button class="btn btn-sm btn-delete" (click)="delete(o.orderid)"><i class="bi bi-trash"></i></button>
+                    @if (pendingDelete === o.orderid) {
+                      <span class="text-muted small me-2">Delete?</span>
+                      <button class="btn btn-sm btn-danger me-1" (click)="confirmDelete(o.orderid)">Yes</button>
+                      <button class="btn btn-sm btn-outline-secondary" (click)="cancelDelete()">No</button>
+                    } @else {
+                      <a [routerLink]="['/orders', o.orderid, 'edit']" class="btn btn-sm btn-edit me-1"><i class="bi bi-pencil"></i></a>
+                      <button class="btn btn-sm btn-delete" (click)="requestDelete(o.orderid)"><i class="bi bi-trash"></i></button>
+                    }
                   }
                 </td>
               </tr>

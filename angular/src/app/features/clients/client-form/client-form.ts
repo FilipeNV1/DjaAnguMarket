@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-client-form',
@@ -19,7 +20,8 @@ export class ClientFormComponent implements OnInit {
     private fb: FormBuilder,
     private api: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toast: ToastService,
   ) {
     this.form = this.fb.group({
       nif: [null, Validators.required],
@@ -47,7 +49,7 @@ export class ClientFormComponent implements OnInit {
       ? this.api.updateClient(this.nif!, data)
       : this.api.createClient(data);
     req.subscribe({
-      next: () => this.router.navigate(['/clients']),
+      next: () => { this.toast.show(this.isEditing ? 'Client updated.' : 'Client created.'); this.router.navigate(['/clients']); },
       error: err => (this.error = JSON.stringify(err.error)),
     });
   }

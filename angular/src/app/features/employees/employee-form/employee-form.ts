@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Supermarket, Employee, Me } from '../../../core/models';
 
 @Component({
@@ -26,7 +27,8 @@ export class EmployeeFormComponent implements OnInit {
     private api: ApiService,
     private auth: AuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toast: ToastService,
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -81,7 +83,7 @@ export class EmployeeFormComponent implements OnInit {
       ? this.api.updateEmployee(this.id!, data)
       : this.api.createEmployee(data);
     req.subscribe({
-      next: () => this.router.navigate(['/employees']),
+      next: () => { this.toast.show(this.isEditing ? 'Employee updated.' : 'Employee created.'); this.router.navigate(['/employees']); },
       error: err => (this.error = JSON.stringify(err.error)),
     });
   }
